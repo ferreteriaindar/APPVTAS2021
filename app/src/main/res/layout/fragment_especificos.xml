@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Especificos">
+
+<!-- <?xml version="1.0" encoding="utf-8"?> -->
+<android.support.constraint.ConstraintLayout   xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Especificos">
+
+    <TableRow
+        android:id="@+id/hr"
+        android:layout_width="364dp"
+        android:layout_height="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="#eeeeee"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/circleEspecifico"></TableRow>
+
+    <at.grabner.circleprogress.CircleProgressView
+        android:id="@+id/circleEspecifico"
+        android:layout_width="251dp"
+        android:layout_height="197dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TableRow
+        android:id="@+id/fondoformapago"
+        android:layout_width="3dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="#eeeeee"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hr"></TableRow>
+
+    <TextView
+        android:id="@+id/txtespecificosCuota"
+        android:layout_width="82dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="5dp"
+        android:text="$99,999"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/fondoformapago"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fondoformapago" />
+
+    <TextView
+        android:id="@+id/txtespecificosVenta"
+        android:layout_width="81dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
+        android:text="$99,999"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.532"
+        app:layout_constraintStart_toEndOf="@+id/fondoformapago"
+        app:layout_constraintTop_toTopOf="@+id/fondoformapago" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Cuota"
+        app:layout_constraintEnd_toStartOf="@+id/fondoformapago"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fondoformapago" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Venta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/fondoformapago"
+        app:layout_constraintTop_toBottomOf="@+id/hr" />
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fondoformapago"
+        app:layout_constraintVertical_bias="0.0">
+        //PRIMERA FILA
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="match_parent"
+            android:layout_height="88dp">
+
+            <TextView
+                android:id="@+id/textView23"
+                android:layout_width="165dp"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:text="TITULO"
+                android:textAlignment="center"
+                android:textColor="@color/cardview_light_background" />
+
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="81dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
+                android:text="CUOTA"
+                android:textAlignment="textStart"
+                android:textColor="@color/cardview_light_background" />
+
+            <TextView
+                android:id="@+id/textView21"
+                android:layout_width="79dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
+                android:text="VENTA"
+                android:textColor="@color/cardview_light_background" />
+
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
+                android:text="%"
+                android:textAlignment="textStart"
+                android:textColor="@color/cardview_light_background" />
+        </TableRow>
+        //SEGUNDA FILA
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="match_parent"
+            android:layout_height="88dp">
+
+            <TextView
+                android:id="@+id/txtespecificostTitulo1"
+                android:layout_width="167dp"
+                android:layout_height="wrap_content"
+                android:text="STANLEY BLACKDECKER-DEWALT (TODO S9 Y B2)"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/txtespecificostCuota1"
+                android:layout_width="81dp"
+                android:layout_height="match_parent"
+                android:text="9999.99"
+                android:textAlignment="viewStart" />
+
+            <TextView
+                android:id="@+id/txtespecificosVenta1"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:text="0.00"
+                android:textAlignment="textStart" />
+
+            <TextView
+                android:id="@+id/txtespecificosPorciento1"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:text="%"
+                android:textAlignment="textStart"
+                android:textSize="12sp" />
+        </TableRow>
+        //TERCERA FILA
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="match_parent"
+            android:layout_height="88dp">
+
+            <TextView
+                android:id="@+id/txtespecificostTitulo2"
+                android:layout_width="167dp"
+                android:layout_height="wrap_content"
+                android:text="STANLEY BLACKDECKER-DEWALT (TODO S9 Y B2)"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/txtespecificostCuota2"
+                android:layout_width="81dp"
+                android:layout_height="match_parent"
+                android:text="9999.99" />
+
+            <TextView
+                android:id="@+id/txtespecificosVenta2"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:text="0.00"
+                android:textAlignment="textStart" />
+
+            <TextView
+                android:id="@+id/txtespecificosPorciento2"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:text="%"
+                android:textAlignment="textStart"
+                android:textSize="12sp" />
+        </TableRow>
+        //CUARTA FILA
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="match_parent"
+            android:layout_height="88dp">
+
+            <TextView
+                android:id="@+id/txtespecificostTitulo3"
+                android:layout_width="167dp"
+                android:layout_height="wrap_content"
+                android:text="STANLEY BLACKDECKER-DEWALT (TODO S9 Y B2)"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/txtespecificostCuota3"
+                android:layout_width="81dp"
+                android:layout_height="match_parent"
+                android:text="9999.99" />
+
+            <TextView
+                android:id="@+id/txtespecificosVenta3"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:text="0.00"
+                android:textAlignment="textStart" />
+
+            <TextView
+                android:id="@+id/txtespecificosPorciento3"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:text="%"
+                android:textAlignment="textStart"
+                android:textSize="12sp" />
+        </TableRow>
+        //QUINTA FILA
+
+        <TableRow
+            android:id="@+id/tableRow5"
+            android:layout_width="match_parent"
+            android:layout_height="88dp">
+
+            <TextView
+                android:id="@+id/txtespecificostTitulo4"
+                android:layout_width="168dp"
+                android:layout_height="match_parent"
+                android:text="STANLEY BLACKDECKER-DEWALT (TODO S9 Y B2)"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/txtespecificostCuota4"
+                android:layout_width="81dp"
+                android:layout_height="match_parent"
+                android:text="9999.99" />
+
+            <TextView
+                android:id="@+id/txtespecificosVenta4"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:text="0.00"
+                android:textAlignment="textStart" />
+
+            <TextView
+                android:id="@+id/txtespecificosPorciento4"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:text="%"
+                android:textAlignment="textStart"
+                android:textSize="12sp" />
+        </TableRow>
+    </TableLayout>
+
+
+</android.support.constraint.ConstraintLayout>
+
+</ScrollView>

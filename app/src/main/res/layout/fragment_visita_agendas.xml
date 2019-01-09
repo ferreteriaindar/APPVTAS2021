@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".fragmentos.clientes.agenda.VisitaAgendas">
+
+
+    <com.baoyachi.stepview.HorizontalStepView
+        android:id="@+id/horizontalStepView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="1dp"
+        android:background="@color/colorPrimaryDark"></com.baoyachi.stepview.HorizontalStepView>
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="69dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnVisitaCobrar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#f57f17"
+            android:drawableTop="@drawable/ic_cobrar"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="5dp"
+            android:text="COBRAR"
+            android:textColor="#e8e9e9" />
+
+        <Button
+            android:id="@+id/btnFragmentVisita"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="#f57f17"
+            android:drawableTop="@drawable/ic_promo"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="5dp"
+            android:text="Promo"
+            android:textColor="#e8e9e9" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#f57f17"
+            android:drawableTop="@drawable/ic_cart"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="5dp"
+            android:text="Pedido"
+            android:textColor="#e8e9e9" />
+
+    </LinearLayout>
+
+</RelativeLayout>

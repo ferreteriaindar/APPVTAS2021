@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_Agenda"
+            android:icon="@drawable/ic_calendar"
+            android:title="Agenda" />
+        <item
+            android:id="@+id/nav_Clientes"
+            android:icon="@drawable/ic_user"
+            android:title="Clientes" />
+        <item
+            android:id="@+id/nav_Inventario"
+            android:icon="@drawable/ic_inventario"
+            android:title="Inventario" />
+        <item
+            android:id="@+id/nav_Mensajes"
+            android:icon="@drawable/ic_mail"
+            android:title="Mensajes" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_sincronizar"
+                android:title="Actualizar Info" />
+            <item
+                android:id="@+id/nav_Enviar"
+                android:icon="@drawable/ic_send"
+                app:actionViewClass="android.widget.TextView"
+                android:title="Enviar Info" />
+        </menu>
+    </item>
+
+</menu>

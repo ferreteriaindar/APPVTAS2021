@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1043977345424",
+    "firebase_url": "https://indarapp-1540563064458.firebaseio.com",
+    "project_id": "indarapp-1540563064458",
+    "storage_bucket": "indarapp-1540563064458.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1043977345424:android:da381d780dca14e1",
+        "android_client_info": {
+          "package_name": "mx.indar.appvtas2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1043977345424-6mor0fegvptq1fgadrvj02kg4hvb4bdv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mx.indar.appvtas2",
+            "certificate_hash": "a4f87920017848327d9e2a00bb8380e136a307c7"
+          }
+        },
+        {
+          "client_id": "1043977345424-cb04q36q9c8usu804rnaakran4tlg35a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpGm-dF26Gay95kveAdZOUqtSjaQfUg8k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1043977345424-cb04q36q9c8usu804rnaakran4tlg35a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

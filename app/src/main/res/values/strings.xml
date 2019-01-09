@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">IndarAPP</string>
+    <string name="btnIniciarSesion">Iniciar Sesion</string>
+    <string name="WEBLOGIN">WebService1.asmx/login</string>
+    <string name="title_activity_navigation_indar">NavigationIndar</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="dbClientes">cliente</string>
+    <string name="WEBclientesPorZona">WebService1.asmx/clientesPorZona</string>
+    <string name="SQLObtenerClientes">select * from clientes</string>
+    <string name="WEBArticulos">WebService1.asmx/art</string>
+    <string name="SQLObtenerVisitas">select * from visitas</string>
+    <string name="WEBSubirVisitas">WebService1.asmx/cargaVisitas</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="WEBcxcZona">WebService1.asmx/cxcZona</string>
+    <string name="SQLObtenerCXCZONA">select * from cxccliente where mov+movid not in (select mov+movid from subircobroD)  </string>
+    <string name="tituloIndar">FERRETERIA INDAR SA DE CV</string>
+    <string name="rfc">FIN870710Q40</string>
+    <string name="indarDireccion">San Martin Al Verde 480 Tlaquepaque, Jal.</string>
+    <string name="reciboCobro">Generar Recibo de Cobro</string>
+    <string name="WEBespecificos">WebService1.asmx/especificos</string>
+    <string name="SQLespecificos">select * from especificos</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="Cancelar">Cancelar</string>
+    <string-array name="FormasPago">
+        <item>Efectivo</item>
+        <item>Cheque</item>
+    </string-array>
+    <string-array name="Bancos">
+        <item>BBVA Bancomer</item>
+        <item>Banamex</item>
+        <item>Banorte</item>
+        <item>HSBC</item>
+        <item>SANTANDER</item>
+    </string-array>
+    <string name="WEBSubirCobros">WebService1.asmx/cargaCobros</string>
+    <string name="title_activity_maps_visitas">Map</string>
+    <string name="SQLvisitasMapa">SELECT CLIENTE,FechaInicio,latitud,longitud FROM VISITAS WHERE FECHAINICIO>=date(\'now\')</string>
+    <string name="WEBchecaVersion">WebService1.asmx/checaVersion</string>
+    <string name="update">Actualizar IndarAPP</string>
+
+</resources>

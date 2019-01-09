@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".fragmentos.clientes.agenda.AgendasFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ImageButton
+        android:id="@+id/btnMICAgebda"
+        android:layout_width="51dp"
+        android:layout_height="74dp"
+        android:layout_above="@+id/lvAgendas"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="83dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="-13dp"
+        android:layout_toEndOf="@+id/editText2"
+        android:background="@color/cardview_shadow_end_color"
+        android:src="@drawable/ic_mic" />
+
+    <ListView
+        android:id="@+id/lvAgendas"
+        android:layout_width="match_parent"
+        android:layout_height="451dp"
+        android:layout_below="@+id/txtFragmentAgendasFiltrar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="0dp"
+        android:divider="#ffffff"
+        android:dividerHeight="7dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        />
+
+    <EditText
+        android:id="@+id/txtFragmentAgendasFiltrar"
+        android:layout_width="255dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:drawableLeft="@drawable/ic_search"
+        android:ems="10"
+        android:hint="Buscar.."
+
+        android:inputType="textPersonName" />
+
+</RelativeLayout>
