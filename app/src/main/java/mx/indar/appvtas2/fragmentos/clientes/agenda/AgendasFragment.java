@@ -137,7 +137,7 @@ public class AgendasFragment extends Fragment implements TextWatcher, LocationLi
         setRetainInstance(true);
     }
 
-
+//PRIMER COMENTARIOS GITHUB
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
@@ -194,7 +194,7 @@ public class AgendasFragment extends Fragment implements TextWatcher, LocationLi
         }
         ag = new AdaptadorAgendas(getActivity().getApplicationContext(),listaclientes);
 
-         lv =(ListView) view.findViewById(R.id.lvAgendas);
+         lv = view.findViewById(R.id.lvAgendas);
 
         lv.setAdapter(ag);
 
@@ -338,9 +338,9 @@ public class AgendasFragment extends Fragment implements TextWatcher, LocationLi
             case 1000: if(resultCode==RESULT_OK && null!=data) {
 
                         ArrayList<String> result= data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                        filtrador.setText(result.get(0).toString());
+                        filtrador.setText(result.get(0));
                         Log.i("voz",result.get(0));
-                Toast.makeText(getActivity(), result.get(0).toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), result.get(0), Toast.LENGTH_SHORT).show();
                         }
                     break;
 
