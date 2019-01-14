@@ -2,26 +2,40 @@ package mx.indar.appvtas2.fragmentos.clientes;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import mx.indar.appvtas2.NavigationIndar;
 import mx.indar.appvtas2.R;
 import mx.indar.appvtas2.dbAdapter;
 import mx.indar.appvtas2.dbClases.cliente;
 import mx.indar.appvtas2.firebase.UbicacionGPS;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,17 +45,19 @@ import mx.indar.appvtas2.firebase.UbicacionGPS;
  * Use the {@link ClientesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ClientesFragment extends Fragment {
+public class ClientesFragment extends Fragment implements NavigationIndar.IOnBackPressed {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private  Context context;
-    private List<cliente> listaclientes;
+    private List<cliente> listaclientes,listaTemp;
     public  ListView lv;
+    public EditText filtrador;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private int textlength;
 
     private OnFragmentInteractionListener mListener;
 
@@ -49,6 +65,27 @@ public class ClientesFragment extends Fragment {
         // Required empty public constructor
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode)
+        {
+
+            case 1000: if(resultCode==RESULT_OK && null!=data) {
+
+                ArrayList<String> result= data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                filtrador.setText(result.get(0));
+                Log.i("voz",result.get(0));
+                Toast.makeText(getActivity(), result.get(0), Toast.LENGTH_SHORT).show();
+            }
+                break;
+
+
+
+        }
+
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -85,13 +122,14 @@ public class ClientesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         context=container.getContext();
-        View v = (LinearLayout) inflater.inflate(R.layout.fragment_clientes, container, false);
-        lv = (ListView)v.findViewById(R.id.lvFragmentClientes);
+        View v = (ConstraintLayout) inflater.inflate(R.layout.fragment_clientes, container, false);
+        lv = v.findViewById(R.id.lvFragmentClientes);
         dbAdapter db = new dbAdapter(context);
         try {
 
             db.open(true);
             listaclientes=db.obtenerClientes(0);  // Se ingresa Valor 0 para que no escoja dia , y sean TODOS los clientes.
+            listaTemp=db.obtenerClientes(0);
             db.close(true);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -109,6 +147,63 @@ public class ClientesFragment extends Fragment {
         });
 
 
+        FloatingActionButton floatingActionButton = ((NavigationIndar) getActivity()).getFab();
+
+        if(floatingActionButton!=null)
+            floatingActionButton.hide();
+
+
+        filtrador=(EditText) v.findViewById(R.id.txtBuscarClientes);
+        filtrador.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+               textlength=filtrador.getText().length();
+                listaTemp.clear();
+                for(int j=0;j<listaclientes.size();j++)
+                {
+                    if (textlength <= listaclientes.get(j).getNombreCliente().length()) {
+                        Log.d("filtrador",listaclientes.get(j).getNombreCliente().toLowerCase().trim());
+                        if (listaclientes.get(j).getNombreCliente().toLowerCase().trim().contains(
+                                filtrador.getText().toString().toLowerCase().trim())) {
+                            listaTemp.add(listaclientes.get(j));
+                        }
+                    }
+                }
+               AdaptadorClientes adapter =  new AdaptadorClientes(getActivity().getApplication(),listaTemp,ClientesFragment.this);
+                lv.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        ImageView btnMic = v.findViewById(R.id.btnMicClientes);
+        btnMic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault());
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT,"NOMBRE CLIENTE");
+
+                try
+                {
+                    startActivityForResult(intent,1000);
+
+                }catch (Exception e)
+                {
+
+                }
+            }
+        });
 
 
         return   v;//  inflater.inflate(R.layout.fragment_clientes, container, false);
@@ -153,6 +248,12 @@ public class ClientesFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        Snackbar.make(getActivity().findViewById(R.id.contenidoNav),"Usa el menu principal",Snackbar.LENGTH_SHORT).show();
+        return false;
     }
 
     /**

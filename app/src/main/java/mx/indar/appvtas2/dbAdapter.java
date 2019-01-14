@@ -152,7 +152,7 @@ public class dbAdapter {
               cliente cte = new cliente();
               cte.setCliente(cursor.getString(0));
               cte.setNombreCliente(cursor.getString(1));
-              cte.setDireccion(cursor.getString(3));
+              cte.setDireccion(cursor.getString(7));
               listaClientes.add(cte);
             }while (cursor.moveToNext());
 
