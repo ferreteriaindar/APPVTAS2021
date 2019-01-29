@@ -67,6 +67,16 @@ public class cxcCliente {
     Integer DiasMoratorios;
     float Saldo;
 
+    public float getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(float descuento) {
+        this.descuento = descuento;
+    }
+
+    float descuento;
+
     public boolean isCheck() {
         return check;
     }

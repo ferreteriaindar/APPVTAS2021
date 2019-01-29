@@ -11,9 +11,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
@@ -52,12 +52,11 @@
 
         <activity
             android:name=".fragmentos.clientes.agenda.MapsActivityVisitas"
-            android:label="@string/title_activity_maps_visitas"></activity>
+            android:label="@string/title_activity_maps_visitas" />
 
-        <service
-            android:name=".firebase.FirebaseMessagingService">
+        <service android:name=".firebase.FirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
@@ -67,6 +66,12 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="e9c09b119752a9b19b20c5e7710d21d50057da9e" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <activity android:name=".menuClientes.menuMain" />
+        <activity android:name=".menuClientes.Cobros.cobrosCte"></activity>
     </application>
 
 </manifest>

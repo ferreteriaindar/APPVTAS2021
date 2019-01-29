@@ -1,19 +1,27 @@
 package mx.indar.appvtas2.fragmentos.clientes.cxc;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.util.Calendar;
 
 import mx.indar.appvtas2.R;
 
@@ -21,9 +29,12 @@ public class DialogFormasDPagos extends DialogFragment {
     public  View view;
     public Spinner spinnerForma,spinnerBanco;
     public EditText importe,referencia;
-    public TextView lblbanco,lblref;
+    public TextView lblbanco,lblref,txtfechacheque;
     public Button btnAceptar,btnCancelar;
-
+    private  DatePickerDialog.OnDateSetListener mDateSetListener;
+  public   int year,month,day,años,mes,dia;
+  String mesString;
+    Calendar calendar;
 
     @Nullable
     @Override
@@ -60,6 +71,34 @@ public class DialogFormasDPagos extends DialogFragment {
 
             }
         });
+        txtfechacheque= view.findViewById(R.id.txtfechaCheque);
+        txtfechacheque.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar cal = Calendar.getInstance();
+                 year=cal.get(Calendar.YEAR);
+                 month=cal.get(Calendar.MONTH);
+                 day=cal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        getActivity(),android.R.style.Theme_Holo_Dialog_MinWidth,mDateSetListener,year,month,day
+                );
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                txtfechacheque.setText(day+"/"+month+1+"/"+year);
+                años=year;
+                mes=month+1;
+                dia=day;
+                mesString=month+1+"";
+                Log.i("cheque",year+"/"+month+1+"/"+day+"datepicker");
+            }
+        };
 
         btnCancelar = view.findViewById(R.id.btnDialogpagoCancelar);
         btnCancelar.setOnClickListener(new View.OnClickListener() {
@@ -72,7 +111,11 @@ public class DialogFormasDPagos extends DialogFragment {
         btnAceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.i("pago","pago"+importe.getText().toString()+"pago");
+                if(!TextUtils.isEmpty( importe.getText().toString()))
                 checarDatos();
+                else
+                    importe.setError("Ingresa Importe");
             }
         });
 
@@ -98,6 +141,10 @@ public class DialogFormasDPagos extends DialogFragment {
             bundle.putString("banco",spinnerBanco.getSelectedItem().toString());
             bundle.putString("referencia",referencia.getText().toString());
         }
+
+        bundle.putInt("año",años);
+        bundle.putInt("mes",mes);
+        bundle.putInt("dia",dia);
 
 
         Intent intent = new Intent().putExtras(bundle);

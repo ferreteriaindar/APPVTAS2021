@@ -2,6 +2,7 @@ package mx.indar.appvtas2.fragmentos.clientes;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -27,6 +28,7 @@ import mx.indar.appvtas2.dbClases.visita;
 import mx.indar.appvtas2.firebase.UbicacionGPS;
 import  mx.indar.appvtas2.fragmentos.clientes.ClienteDetalle;
 import mx.indar.appvtas2.fragmentos.clientes.agenda.VisitaAgendas;
+import mx.indar.appvtas2.menuClientes.menuMain;
 
 public class AdaptadorClientes extends BaseAdapter {
 
@@ -73,7 +75,7 @@ public class AdaptadorClientes extends BaseAdapter {
         gps.inicializar();
 
         final TextView txtCliente= vista.findViewById(R.id.txtLayoutCteCliente);
-        TextView txtNombreCTe= vista.findViewById(R.id.txtLayoutCteNombre);
+        final TextView txtNombreCTe= vista.findViewById(R.id.txtLayoutCteNombre);
         txtCliente.setText(listaclientes.get(i).getCliente());
         txtNombreCTe.setText(listaclientes.get(i).getNombreCliente());
         Button btnOpcion2 =(Button) vista.findViewById(R.id.btnLayoutCTeOpcion2);
@@ -120,16 +122,16 @@ public class AdaptadorClientes extends BaseAdapter {
               else Toast.makeText(context, "No hay conexion GPS,espera un momento", Toast.LENGTH_SHORT).show();
             }
         });
-        Button btnCte = vista.findViewById(R.id.btnLayoutCTeOpcion1);
-         btnCte.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 ClienteDetalle nextFrag= new ClienteDetalle();
-
-                 Log.i("button","si");
-             }
-         });
-
+        Button btnEntrar = (Button) vista.findViewById(R.id.btnLayoutCTeOpcion1);
+        btnEntrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context,menuMain.class);
+                intent.putExtra("cliente",txtNombreCTe.getText().toString());
+                intent.putExtra("codigo",txtCliente.getText().toString());
+               context.startActivity(intent);
+            }
+        });
 
         return vista;
     }

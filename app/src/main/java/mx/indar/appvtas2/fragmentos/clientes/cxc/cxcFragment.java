@@ -1,7 +1,9 @@
 package mx.indar.appvtas2.fragmentos.clientes.cxc;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
@@ -28,11 +30,13 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import mx.indar.appvtas2.Bluetooth.Impresora;
 import mx.indar.appvtas2.GPStracker;
@@ -79,6 +83,28 @@ public class cxcFragment extends Fragment implements NavigationIndar.IOnBackPres
         // Required empty public constructor
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+
+            Bundle b = new Bundle();
+            cobrarFragment cf = new cobrarFragment();
+            b.putParcelableArrayList("docsSeleccionado",(ArrayList)adaptadorCXC.docsSelecionados );
+            b.putString("cliente",cliente);
+            b.putString("formapago",data.getExtras().getString("formapago"));
+            b.putFloat("importe",Float.parseFloat( data.getExtras().getString("importe")));
+            b.putString("referencia",data.getExtras().getString("referencia")+" "+data.getExtras().get("banco"));
+            cf.setArguments(b);
+            Log.i("entra","si entra al result");
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.contenidoNav, cf, "cobrarfagment")
+                    .addToBackStack( null)
+                    .commit();
+        }
+
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -122,7 +148,7 @@ public class cxcFragment extends Fragment implements NavigationIndar.IOnBackPres
 
     public boolean imprimirTodo()
     {
-        Impresora imp = new Impresora(getActivity(),this);
+        Impresora imp = new Impresora(getActivity());
         if(imp.FindBluetoothDevice())
         {
             try {
@@ -132,52 +158,54 @@ public class cxcFragment extends Fragment implements NavigationIndar.IOnBackPres
                 String linea;
                 String padded;
                 //imp.printPhoto(R.drawable.ic_cobrar);
-                imp.ImprimirCabezeraTicket();
-                imp.printDATA("");
+                if(imp.puedoImprimir) {
+                    imp.ImprimirCabezeraTicket();
+                    imp.printDATA("");
 
-                imp.printDATA("----------------------------------------------");
-                for(int i=0;i<listacliente.size();i++) {
-
-                    linea=listacliente.get(i).getMov()+" "+listacliente.get(i).getMovID();
-                   // padded = new String( linea+new char[width - linea.length()]).replace('\0', fill) ;
-                    padded=String.format("%-10s",linea).replace(' ',' ');
-                    imp.printDATA(padded);
-                    linea=listacliente.get(i).getReferencia();
-                    padded=String.format("%-10s",linea).replace(' ',' ');
-                    imp.printDATA(" EMISION       VENCIMIENTO            DIAS\t    ");
-                    String vencimiento = "", fechaemision = "";
-                    try {
-
-
-                        String pattern = "dd/MM/yyyy";
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                        SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat(pattern);
-                        Date newDatE = null, newdate2;
-
-                        newDatE = simpleDateFormat.parse(listacliente.get(i).getVencimiento());
-                        newdate2 = simpleDateFormat2.parse(listacliente.get(i).getFechaEmision());
-
-                        simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                        simpleDateFormat2 = new SimpleDateFormat("dd/MM/yyyy");
-                        vencimiento = simpleDateFormat.format(newDatE);
-                        fechaemision = simpleDateFormat2.format(newdate2);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    linea=fechaemision+"         "+vencimiento+"            "+listacliente.get(i).getDiasMoratorios();
-                    padded=String.format("%-10s",linea).replace(' ',' ');
-                    imp.printDATA(padded);
-
-                    linea="IMPORTE ----------->>       $"+listacliente.get(i).getSaldo();
-                    padded=String.format("%-10s",linea).replace(' ',' ');
-                    imp.printDATA("$"+padded);
                     imp.printDATA("----------------------------------------------");
+                    for (int i = 0; i < listacliente.size(); i++) {
+
+                        linea = listacliente.get(i).getMov() + " " + listacliente.get(i).getMovID();
+                        // padded = new String( linea+new char[width - linea.length()]).replace('\0', fill) ;
+                        padded = String.format("%-10s", linea).replace(' ', ' ');
+                        imp.printDATA(padded);
+                        linea = listacliente.get(i).getReferencia();
+                        padded = String.format("%-10s", linea).replace(' ', ' ');
+                        imp.printDATA(" EMISION       VENCIMIENTO            DIAS\t    ");
+                        String vencimiento = "", fechaemision = "";
+                        try {
 
 
+                            String pattern = "dd/MM/yyyy";
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                            SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat(pattern);
+                            Date newDatE = null, newdate2;
 
+                            newDatE = simpleDateFormat.parse(listacliente.get(i).getVencimiento());
+                            newdate2 = simpleDateFormat2.parse(listacliente.get(i).getFechaEmision());
+
+                            simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            simpleDateFormat2 = new SimpleDateFormat("dd/MM/yyyy");
+                            vencimiento = simpleDateFormat.format(newDatE);
+                            fechaemision = simpleDateFormat2.format(newdate2);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        linea = fechaemision + "         " + vencimiento + "            " + listacliente.get(i).getDiasMoratorios();
+                        padded = String.format("%-10s", linea).replace(' ', ' ');
+                        imp.printDATA(padded);
+
+                        linea = "IMPORTE ----------->>       $" + listacliente.get(i).getSaldo();
+                        padded = String.format("%-10s", linea).replace(' ', ' ');
+                        imp.printDATA("$" + padded);
+                        imp.printDATA("----------------------------------------------");
+
+
+                    }
+                    imp.printDATA("");
+                    imp.printDATA("");
                 }
-                imp.printDATA("");
-                imp.printDATA("");
+                else Toast.makeText(getActivity(), "NO SE PUEDE IMPRIMIR, REINICIA IMPRESORA", Toast.LENGTH_LONG).show();
                 imp.disconnectBT();
 
             } catch (IOException e) {
@@ -277,7 +305,7 @@ public class cxcFragment extends Fragment implements NavigationIndar.IOnBackPres
                 }
             });
             db.close(true);
-
+            recyclerView.setItemViewCacheSize(listacliente.size());
             recyclerView.setAdapter(adaptadorCXC);
 
 
@@ -294,6 +322,17 @@ public class cxcFragment extends Fragment implements NavigationIndar.IOnBackPres
 
                 if(adaptadorCXC.docsSelecionados.size()>=0)
                 {
+
+
+/*
+
+                    DialogFormasDPagos dfp = new DialogFormasDPagos();
+                    dfp.setTargetFragment(cxcFragment.this,1);
+                    dfp.show(getActivity().getSupportFragmentManager(),"formapago");
+
+                        */
+
+                    //COBRAR FRAGMENT
 
                     Bundle b = new Bundle();
                   cobrarFragment cf = new cobrarFragment();

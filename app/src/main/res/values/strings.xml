@@ -31,6 +31,7 @@
     <string-array name="FormasPago">
         <item>Efectivo</item>
         <item>Cheque</item>
+        <item>Transferencia</item>
     </string-array>
     <string-array name="Bancos">
         <item>BBVA Bancomer</item>
@@ -44,5 +45,6 @@
     <string name="SQLvisitasMapa">SELECT CLIENTE,FechaInicio,latitud,longitud FROM VISITAS WHERE FECHAINICIO>=date(\'now\')</string>
     <string name="WEBchecaVersion">WebService1.asmx/checaVersion</string>
     <string name="update">Actualizar IndarAPP</string>
+    <string name="WEBARTDOWNLOAD">WebService1.asmx/articulos</string>
 
 </resources>

@@ -166,7 +166,7 @@ public class dbAdapter {
     public  long registraVisitaCte(visita v)
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         Date date = new Date();
 
         ContentValues values = new ContentValues();
@@ -226,6 +226,7 @@ public class dbAdapter {
         values.put("DiasMoratorios",cxcCliente.getDiasMoratorios());
         values.put("Saldo",cxcCliente.getSaldo());
         values.put("Referencia",cxcCliente.getReferencia());
+        values.put("descuento", cxcCliente.getDescuento());
 
         return database.insert("cxcCliente", null, values);
 
@@ -314,6 +315,7 @@ public class dbAdapter {
                 cxc.setDiasMoratorios(cursor.getInt(5));
                 cxc.setSaldo(cursor.getFloat(6));
                 cxc.setReferencia(cursor.getString(7));
+                cxc.setDescuento(cursor.getFloat(8));
                 listacxc.add(cxc);
             }while (cursor.moveToNext());
 
@@ -334,7 +336,7 @@ public class dbAdapter {
 
         ContentValues cv = new ContentValues();
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         Date date = new Date();
         switch (avance)
         {

@@ -59,8 +59,28 @@ public class documentoCXC {
     }
 
     int id;
+
+    public int getDias() {
+        return dias;
+    }
+
+    public void setDias(int dias) {
+        this.dias = dias;
+    }
+
+    int dias;
     String mov,movid,fechaemision,cliente,usuario;
     float importe;
+
+    public float getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(float descuento) {
+        this.descuento = descuento;
+    }
+
+    float descuento;
 
 
 }

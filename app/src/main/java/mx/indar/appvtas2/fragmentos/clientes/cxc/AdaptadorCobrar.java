@@ -1,6 +1,8 @@
 package mx.indar.appvtas2.fragmentos.clientes.cxc;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +21,20 @@ public class AdaptadorCobrar  extends BaseAdapter {
 
     private Context context;
     private List<documentoCXC> listadocumento;
+    String formaPago;
+    int diasparaCheque;
 
     public AdaptadorCobrar(Context context, List<documentoCXC> listadocumento) {
         this.context = context;
         this.listadocumento = listadocumento;
+        formaPago="nada";
     }
-
+    public AdaptadorCobrar(Context context, List<documentoCXC> listadocumento,String formaPago,int  diasparaCheque) {
+        this.context = context;
+        this.listadocumento = listadocumento;
+        this.formaPago=formaPago;
+        this.diasparaCheque=diasparaCheque;
+    }
     @Override
     public int getCount() {
         return listadocumento.size();
@@ -49,6 +59,29 @@ public class AdaptadorCobrar  extends BaseAdapter {
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.CANADA);
         movid.setText(listadocumento.get(i).getMov()+" "+ listadocumento.get(i).getMovid());
         importe.setText(format.format(listadocumento.get(i).getImporte()));
+        TextView descuento= vista.findViewById(R.id.txtCobrarDescuento);
+       // if(listadocumento.get(i).getDias()<=0)
+        descuento.setText(listadocumento.get(i).getDescuento()+"");
+
+            if (formaPago.equals("Cheque")) {
+                if (listadocumento.get(i).getDias() <= 0 && listadocumento.get(i).getDescuento() != 0 && (listadocumento.get(i).getDias() + diasparaCheque) <= 0) {
+                    descuento.setTextColor(Color.GREEN);
+                } else {
+                    descuento.setTextColor(Color.RED);
+                    descuento.setPaintFlags(descuento.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                }
+            }
+            else {
+                if (listadocumento.get(i).getDias() <= 0 && listadocumento.get(i).getDescuento() != 0) {
+                    descuento.setTextColor(Color.GREEN);
+                } else {
+                    descuento.setTextColor(Color.RED);
+                    descuento.setPaintFlags(descuento.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                }
+
+            }
+
+
 
 
 

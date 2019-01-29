@@ -10,7 +10,7 @@ import java.io.File;
 
 public class db extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
     //VERSION 1  pruebas
     //VERSION 2  solo alta tabla de clientes
     //VERSION 3  se crea la tabla de art
@@ -23,7 +23,9 @@ public class db extends SQLiteOpenHelper {
     //VERSION 11 SE Crea la Tabla Especificos del vendedor
     //VERSION 12 Se crea ta Table subirCobro y subirCobroD  para los recibos de cobro CXC
     //VERSION 13 SE Agregan campor en la tabla de VISITAS   latitud y longitud cobranza
+    //VERSION 14 SE agrega el campo  de descuento en la tabla CXCCLIENTE
     public static final String DATABASE_NAME = "indarAPP";
+
 
 
 
@@ -94,7 +96,9 @@ public class db extends SQLiteOpenHelper {
                 "    Vencimiento    TEXT    NOT NULL,\n" +
                 "    DiasMoratorios INTEGER,\n" +
                 "    Saldo          REAL,\n" +
-                "    Referencia\n" +
+                "Referencia     TEXT,\n" +
+                "descuento      REAL"+
+
                 ");");
         db.execSQL("CREATE TABLE especificos (\n" +
                 "    Cuota             REAL,\n" +

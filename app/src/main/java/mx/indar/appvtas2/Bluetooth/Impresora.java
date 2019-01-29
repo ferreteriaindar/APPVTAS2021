@@ -15,6 +15,9 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,11 +40,13 @@ public class Impresora {
     volatile  boolean stopWorker;
     Context context;
     cxcFragment cxcFragment;
+   public boolean puedoImprimir;
 
-    public Impresora(Context context,cxcFragment cxc) {
+    public Impresora(Context context) {
 
-        this.cxcFragment=cxc;
+       // this.cxcFragment=cxc;
         this.context=context;
+        puedoImprimir=true;
     }
 
    public boolean FindBluetoothDevice()
@@ -52,11 +57,12 @@ public class Impresora {
             if(bluetoothAdapter==null)
             {
                 Log.i("bluetooth","No puerto bluetooth");
+                puedoImprimir=false;
                 return  false;
             }
             if(bluetoothAdapter.isEnabled())
             {
-                Log.i("bluetooth","si encontró");
+                Log.i("bluetooth","Si esta encendido Bluetooth");
                 Intent enableBt =new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 ((Activity)context).startActivityForResult(enableBt,0);
             }
@@ -109,8 +115,10 @@ public class Impresora {
 
         }catch (Exception ex)
         {
-            Log.i("bluetooth",ex.getMessage());
-            disconnectBT();
+            Log.i("bluetooth","NO SE PUDO CONECTAR LA IMPRESORA");
+            bluetoothSocket.close();
+            puedoImprimir=false;
+          //  disconnectBT();
         }
     }
 
@@ -183,7 +191,7 @@ public class Impresora {
 
     }
 
-
+/*
     public void printPhoto(int img) {
         try {
             Bitmap bmp =  BitmapFactory.decodeResource(cxcFragment.getActivity().getResources(),
@@ -204,18 +212,19 @@ public class Impresora {
         }
     }
 
-
+*/
     public  void  printDATA(String msg) throws  IOException{
-        try {
+        //     try {
 
             //String  msg= "INDAR  IMPRESORA";
             msg+="\n";
             Log.i("bluetooth","IMPRIMIENDO");
+        outputStream = bluetoothSocket.getOutputStream();
             outputStream.write(msg.getBytes());
-        }catch (Exception ex)
+       /* }catch (Exception ex)
         {
             Log.i("bluetooth",ex.getMessage());
-        }
+        }*/
     }
 
     public  void disconnectBT() throws IOException{
@@ -237,11 +246,16 @@ public class Impresora {
     {
         String  titulo=  context.getResources().getString(R.string.tituloIndar);
         try {
-            printDATA(titulo);
-            printDATA(context.getResources().getString(R.string.rfc));
-            printDATA(context.getResources().getString(R.string.indarDireccion));
+            printDATA("           "+titulo);
+            //printDATA(context.getResources().getString(R.string.rfc));
+            printDATA("   "+context.getResources().getString(R.string.indarDireccion));
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Date date = new Date();
+            printDATA("             "+dateFormat.format(date));
+
         } catch (IOException e) {
             e.printStackTrace();
+
         }
 
     }

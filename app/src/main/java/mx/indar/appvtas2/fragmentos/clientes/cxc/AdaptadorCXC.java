@@ -2,6 +2,7 @@ package mx.indar.appvtas2.fragmentos.clientes.cxc;
 
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.icu.util.ValueIterator;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -52,7 +53,7 @@ public class AdaptadorCXC extends RecyclerView.Adapter<AdaptadorCXC.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.rows_cxc, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(  R.layout.rows_cxc, parent, false);
         final ViewHolder viewHolder = new ViewHolder(v);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,8 +104,12 @@ public class AdaptadorCXC extends RecyclerView.Adapter<AdaptadorCXC.ViewHolder> 
      holder.importe.setText("$"+listacxc.get(position).getSaldo()+"");
      holder.emision.setText(fechaemision);
      holder.vencimiento.setText(vencimiento);
-     if((Integer)(listacxc.get(position).getDiasMoratorios())>0)
+     holder.descuento.setText(listacxc.get(position).getDescuento()+"%");
+     Log.i("cxc",listacxc.get(position).getDescuento()+"");
+     if((Integer)(listacxc.get(position).getDiasMoratorios())>0) {
          holder.dias.setTextColor(Color.RED);
+         holder.descuento.setPaintFlags(holder.descuento.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+     }
      else holder.dias.setTextColor(Color.GREEN);
      holder.dias.setText(listacxc.get(position).getDiasMoratorios()+"");
      if(listacxc.get(position).getMov().startsWith("F"))
@@ -124,6 +129,9 @@ public class AdaptadorCXC extends RecyclerView.Adapter<AdaptadorCXC.ViewHolder> 
                 documentoCXC cxc = new documentoCXC();
                 cxc.setMov(listacxc.get(position).getMov());
                 cxc.setMovid(   holder.movid.getText().toString().replace(listacxc.get(position).getMov()+ " ",""));
+                cxc.setDescuento(     listacxc.get(position).getDescuento());
+                cxc.setDias(listacxc.get(position).getDiasMoratorios());
+
 
                 cxc.setImporte(Float.parseFloat( holder.importe.getText().toString().substring(1)));
                 if(checked)
@@ -153,7 +161,7 @@ public class AdaptadorCXC extends RecyclerView.Adapter<AdaptadorCXC.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView  mov,movid,referencia,emision,vencimiento,dias,importe,total;
+        TextView  mov,movid,referencia,emision,vencimiento,dias,importe,total,descuento;
         ImageView img;
         public float totalcard=0;
 
@@ -170,6 +178,7 @@ public class AdaptadorCXC extends RecyclerView.Adapter<AdaptadorCXC.ViewHolder> 
 
         public ViewHolder(View itemView) {
             super(itemView);
+            this.setIsRecyclable(false);
             movid= itemView.findViewById(R.id.txtlayoutMovcxc);
             referencia=itemView.findViewById(R.id.txtlayoutreferencaiacxc);
             emision=itemView.findViewById(R.id.txtlayoutemisioncxc);
@@ -179,6 +188,7 @@ public class AdaptadorCXC extends RecyclerView.Adapter<AdaptadorCXC.ViewHolder> 
             img = itemView.findViewById(R.id.imgLayoutcxc);
             total= itemView.findViewById(R.id.txtLayoutImportetotalCxc);
             checkBox=itemView.findViewById(R.id.checklayoutcxc);
+            descuento=itemView.findViewById(R.id.txtlayoutDescuento);
            /* checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

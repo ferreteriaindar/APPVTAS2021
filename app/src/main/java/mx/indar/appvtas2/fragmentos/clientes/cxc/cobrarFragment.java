@@ -2,10 +2,12 @@ package mx.indar.appvtas2.fragmentos.clientes.cxc;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.icu.util.TimeUnit;
 import android.os.Bundle;
 import android.provider.SyncStateContract;
 import android.support.design.widget.FloatingActionButton;
@@ -28,13 +30,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.security.PublicKey;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import mx.indar.appvtas2.Bluetooth.Impresora;
 import mx.indar.appvtas2.NavigationIndar;
 import mx.indar.appvtas2.R;
 import mx.indar.appvtas2.dbAdapter;
@@ -67,8 +76,11 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
     public  List<formaPago> listaformaPago;
     public  float importeformaPago=0,importeFinal=0, importe=0;
     TextView txtformaPagoImportefinal;
-    TextView txtImporte;
-    public String cliente;
+    TextView txtImporte,txtFormaPago,TxtReferencia,txtFechaPago;
+    public String cliente,formaPago,referencia;
+    public  int  año,dia,mes, diasparaCheque;
+    Long id;
+
 
     public boolean isResultadoSalir() {
         return ResultadoSalir;
@@ -91,6 +103,72 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
             if (resultCode == Activity.RESULT_OK) {
 
                 if (data.getExtras().containsKey("formapago")) {
+                    formaPago=data.getExtras().getString("formapago");
+                    importeFinal= Float.parseFloat( data.getExtras().getString("importe"));
+                    Log.i("cobrar","importe final:"+importeFinal+"");
+                    if(!formaPago.equals("Efectivo"))
+                    {
+                        Log.i("cobrar",data.getExtras().getString("banco"));
+                        Log.i("cobrar",data.getExtras().getString("referencia"));
+                        referencia=data.getExtras().getString("banco")+data.getExtras().getString("referencia");
+                        año=data.getExtras().getInt("año");
+                        mes=data.getExtras().getInt("mes");
+                        dia=data.getExtras().getInt("dia");
+                        Log.i("cobrar",referencia+"referencia");
+
+                        importe=0;
+                        for(int i=0;i<listadocumentos.size();i++)
+                        {
+                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+                            try {
+                                Date fechacheque =formatter.parse(año+"/"+mes+"/"+dia);
+                                Calendar chequefecha=Calendar.getInstance();
+                                chequefecha.setTime(fechacheque);
+
+                                Calendar hoy = Calendar.getInstance();
+                                Log.i("cheque",chequefecha.get(Calendar.DAY_OF_YEAR)+"cheque");
+                                Log.i("cheque", hoy.get(Calendar.DAY_OF_YEAR)+"hoy");
+                                diasparaCheque=0;
+                                diasparaCheque=chequefecha.get(Calendar.DAY_OF_YEAR)-hoy.get(Calendar.DAY_OF_YEAR);
+                                Log.i("cheque",chequefecha.get(Calendar.DAY_OF_YEAR)-hoy.get(Calendar.DAY_OF_YEAR)+"diasparacheque");
+
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            Log.i("cheque",(listadocumentos.get(i).getDias()+"diasdoc"+diasparaCheque+"diferencia dias"));
+                                Log.i("cheque",(listadocumentos.get(i).getDias()+diasparaCheque)+"diferencia dias");
+                                if(formaPago.equals("Cheque")) {
+                                    if (listadocumentos.get(i).getDias() <= 0 && listadocumentos.get(i).getDescuento() > 0 && (listadocumentos.get(i).getDias()+diasparaCheque)<=0)
+                                        importe += listadocumentos.get(i).getImporte() * (1 - (listadocumentos.get(i).getDescuento() / 100));
+                                    else importe += listadocumentos.get(i).getImporte();
+                                }
+                                else {
+                                    if (listadocumentos.get(i).getDias() <= 0 && listadocumentos.get(i).getDescuento() > 0)
+                                        importe += listadocumentos.get(i).getImporte() * (1 - (listadocumentos.get(i).getDescuento() / 100));
+                                    else importe += listadocumentos.get(i).getImporte();
+
+                                }
+
+                        }
+                    }
+                    else referencia="N/A";
+                }
+                TxtReferencia.setText(referencia);
+
+
+                NumberFormat format = NumberFormat.getCurrencyInstance(Locale.CANADA);
+                txtImporte.setText(format.format(importe));
+                txtformaPagoImportefinal.setText(format.format(importeFinal));
+                txtFormaPago.setText(formaPago);
+                AdaptadorCobrar ac = new AdaptadorCobrar(getActivity(),listadocumentos,formaPago,diasparaCheque);
+                lv.setAdapter(ac);
+
+
+
+                /*
+                if (data.getExtras().containsKey("formapago")) {
 
                     Log.i("cxc","formade pago"+ data.getExtras().getString("formapago"));
                     formaPago fp= new formaPago();
@@ -112,7 +190,7 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
                         txtformaPagoImportefinal.setTextColor(Color.parseColor("#2e7d32"));
                     }
 
-                }
+                }*/
             }
         }
 
@@ -127,7 +205,7 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
                 insertaCobro();
                 setResultadoSalir(true);
                 Toast.makeText(getActivity(), "Cobro Guardado", Toast.LENGTH_SHORT).show();
-                getActivity().getSupportFragmentManager().popBackStack();
+                //getActivity().getSupportFragmentManager().popBackStack();
 
 
                 Log.i("cxc","boton registracobro");
@@ -142,6 +220,160 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
 
 
 
+    public  void ImprimeCobro()
+    {
+        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.CANADA);
+        Impresora imp = new Impresora(getActivity());
+        if(imp.FindBluetoothDevice())
+        {
+            try {
+                imp.openBluetoothPrinter();
+                int width = 47;
+                char fill = '\u00A0';
+               // String linea;
+                String padded;
+                //imp.printPhoto(R.drawable.ic_cobrar);
+                if (imp.puedoImprimir) {
+                    imp.ImprimirCabezeraTicket();
+                    imp.printDATA("");
+
+                    imp.printDATA("----------------------------------------------");
+                    imp.printDATA("RECIBO DE COBRO: "+id+"");
+                    imp.printDATA("CLIENTE: "+cliente);
+                    SharedPreferences prefs=getActivity().getSharedPreferences(getResources().getString(R.string.action_settings), MODE_PRIVATE);
+                    imp.printDATA("VENDEDOR: "+prefs.getString("nombre",""));
+                    imp.printDATA("----------------------------------------------");
+                    imp.printDATA("");
+                    for(int i=0;i<listadocumentos.size();i++)
+                    {
+                        String linea="";
+                        linea=listadocumentos.get(i).getMov()+" "+listadocumentos.get(i).getMovid()+"  ";//+"  $"+listadocumentos.get(i).getImporte()+"    ";
+                        String  descto;
+                        if(formaPago.equals("Cheque")) {
+                            if (listadocumentos.get(i).getDias() <= 0 && listadocumentos.get(i).getDescuento() > 0 && (listadocumentos.get(i).getDias()+diasparaCheque)<=0) {
+                                descto = listadocumentos.get(i).getDescuento() + "%";
+                                linea+=descto+"  ";
+                                linea+=String.format("%1$"+ 15 + "s",format.format(listadocumentos.get(i).getImporte() * (1 - (listadocumentos.get(i).getDescuento() / 100))) );
+                                //listadocumentos.get(i).getImporte() * (1 - (listadocumentos.get(i).getDescuento() / 100));
+                                imp.printDATA(linea);
+                                imp.printDATA("     antes: "+format.format(listadocumentos.get(i).getImporte()));
+
+                            }
+                            else {
+                                        descto="0%";
+                                        linea+=descto+"  "+String.format("%1$"+ 15 + "s",format.format(listadocumentos.get(i).getImporte()) );;
+                                        imp.printDATA(linea);
+                            }
+                        }
+                        else {
+                            if (listadocumentos.get(i).getDias() <= 0 && listadocumentos.get(i).getDescuento() > 0) {
+                                descto = listadocumentos.get(i).getDescuento() + "%";
+                                linea+=descto+"  ";
+                                linea+=String.format("%1$"+ 15 + "s",format.format(listadocumentos.get(i).getImporte() * (1 - (listadocumentos.get(i).getDescuento() / 100))) );
+                                //listadocumentos.get(i).getImporte() * (1 - (listadocumentos.get(i).getDescuento() / 100));
+                                imp.printDATA(linea);
+                                imp.printDATA("     antes: "+format.format(listadocumentos.get(i).getImporte()));
+                            }
+                            else {
+                                descto="0%";
+                                linea+=descto+"  "+String.format("%1$"+ 15 + "s",format.format(listadocumentos.get(i).getImporte()) );;
+                                imp.printDATA(linea);
+                            }
+
+                        }
+                      /*  linea+=descto+"  ";
+                         format = NumberFormat.getCurrencyInstance(Locale.CANADA);
+                        padded =  String.format("%1$"+ 15 + "s",format.format(listadocumentos.get(i).getImporte()) );
+                        linea+=padded;
+                        imp.printDATA(linea); */
+
+
+
+
+                    }
+                    imp.printDATA("----------------------------------------------");
+                    imp.printDATA("IMPORTE DOCS:                    "+txtImporte.getText().toString());
+                    imp.printDATA("IMPORTE PAGADO                   "+txtformaPagoImportefinal.getText().toString());
+                    imp.printDATA("");
+                    imp.printDATA("METODO:"+formaPago);
+                    imp.printDATA("FECHAPAGO: "+txtFechaPago.getText().toString());
+                    imp.printDATA("REFERENCIA: "+TxtReferencia.getText().toString());
+                    imp.printDATA(" ");
+                    imp.printDATA(" ");
+                    imp.printDATA(" ");
+
+
+                }
+                imp.disconnectBT();
+            } catch (IOException e) {
+                e.printStackTrace();
+                try {
+                    imp.disconnectBT();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+
+
+
+    }
+
+    public  void insertaCobro()
+    {
+        SharedPreferences prefs= getActivity().getSharedPreferences("Settings",MODE_PRIVATE);
+        dbAdapter db= new dbAdapter(getActivity().getApplicationContext());
+        try {
+            //INSERTA   LA CABECERA DEL COBRO
+            db.open(true);
+            subirCobro sd = new subirCobro();
+            sd.setCliente(cliente);
+            sd.setFormaPago(formaPago);
+            sd.setImporte(importeFinal);
+            sd.setZona(prefs.getString("usuario",""));
+             id=db.insertarsubirCobro(sd);
+            for(int j=0;j<listadocumentos.size();j++) {
+                subirCobroD scd = new subirCobroD();
+                scd.setIdSubirCobro(id.intValue());
+                scd.setImporte(listadocumentos.get(j).getImporte());
+                scd.setMov(listadocumentos.get(j).getMov());
+                scd.setMovid(listadocumentos.get(j).getMovid());
+
+                db.insertarsubirCobroD(scd);
+            }
+            db.close(true);
+            ImprimeCobro();
+
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(cobrarFragment.this.getActivity());
+            builder1.setMessage("¿Reimprimir  TICKET?");
+            builder1.setCancelable(true);
+
+            builder1.setPositiveButton(
+                    "SI",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                          ImprimeCobro();
+                        }
+                    });
+
+            builder1.setNegativeButton(
+                    "NO",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    });
+
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+/*
     public  void insertaCobro()
     {
         SharedPreferences prefs =getActivity().getSharedPreferences(getResources().getString(R.string.action_settings), MODE_PRIVATE);
@@ -165,6 +397,7 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
                 scd.setImporte(listadocumentos.get(j).getImporte());
                 scd.setMov(listadocumentos.get(j).getMov());
                 scd.setMovid(listadocumentos.get(j).getMovid());
+
                 db.insertarsubirCobroD(scd);
             }
 
@@ -175,7 +408,7 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
             e.printStackTrace();
         }
     }
-
+*/
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -205,6 +438,10 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
         if (bundle != null) {
             listadocumentos = (ArrayList)bundle.getParcelableArrayList("docsSeleccionado");
             cliente=bundle.getString("cliente");
+          //  formaPago=bundle.getString("formapago");
+         //   referencia=bundle.getString("referencia");
+           // importeFinal=bundle.getFloat("importe");
+
         }
         setHasOptionsMenu(true); //ESTO ES PARA  EL MENU
         setRetainInstance(true);
@@ -228,12 +465,13 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
         TextView txtSeleccionados= view.findViewById(R.id.txtcobrarSeleccionados);
        txtformaPagoImportefinal= view.findViewById(R.id.txtformaPagoImportefinal);
         lv= view.findViewById(R.id.lvcobrar);
-       recyclerView=view.findViewById(R.id.lvformasPago);
-      recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+       //recyclerView=view.findViewById(R.id.lvformasPago);
+     // recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+/*
        AdaptadorCobrar ac = new AdaptadorCobrar(getActivity(),listadocumentos);
-       lv.setAdapter(ac);
+       lv.setAdapter(ac); */
         importe=0;
-       AdaptadorFormaPago afp = new AdaptadorFormaPago(listaformaPago, new CustomItemClickListener() {
+     /*  AdaptadorFormaPago afp = new AdaptadorFormaPago(listaformaPago, new CustomItemClickListener() {
            @Override
            public void onItemClick(View v, int position) {
 
@@ -241,32 +479,47 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
        });
 
        recyclerView.setAdapter(afp);
-
+*/
 
        for(int i=0;i<listadocumentos.size();i++)
        {
            Log.i("cobrar",listadocumentos.get(i).getImporte()+"");
-           importe+=listadocumentos.get(i).getImporte();
+           if(listadocumentos.get(i).getDias()<=0 && listadocumentos.get(i).getDescuento()>0)
+               importe+=listadocumentos.get(i).getImporte()*(1-(listadocumentos.get(i).getDescuento()/100));
+         else  importe+=listadocumentos.get(i).getImporte();
 
        }
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.CANADA);
         txtImporte.setText(format.format(importe));
         txtSeleccionados.append(" "+listadocumentos.size());
-        img = view.findViewById(R.id.imgcobrarbtn);
-        img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DialogFormasDPagos dfp = new DialogFormasDPagos();
-                dfp.setTargetFragment(cobrarFragment.this,1);
-                dfp.show(getActivity().getSupportFragmentManager(),"formapago");
-            }
-        });
+
 
         FloatingActionButton floatingActionButton = ((NavigationIndar) getActivity()).getFab();
 
         if(floatingActionButton!=null)
             floatingActionButton.hide();
-        txtformaPagoImportefinal.setText(importeFinal+"");
+     //   txtformaPagoImportefinal.setText(importeFinal+"");
+        txtFormaPago = view.findViewById(R.id.txtCobrarFormaPago);
+        txtFormaPago.setText(formaPago);
+        txtFechaPago= view.findViewById(R.id.txtCobrarFechaPago);
+        Date date = new Date();
+
+        DateFormat fmt = new SimpleDateFormat("dd-MM-yyyy");
+        txtFechaPago.setText(fmt.format(date));
+        TxtReferencia= view.findViewById(R.id.txtCobrarReferencia);
+        TxtReferencia.setText(referencia);
+
+
+        ImageView btnagregar = view.findViewById(R.id.imgBTNCobrarAgregar);
+        btnagregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DialogFormasDPagos dfp = new DialogFormasDPagos();
+                dfp.setTargetFragment(cobrarFragment.this,1);
+                dfp.show(getActivity().getSupportFragmentManager(),"formapago");
+            }
+        });
         return view;
 
 

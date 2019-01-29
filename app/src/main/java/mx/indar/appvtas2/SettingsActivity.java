@@ -149,15 +149,25 @@ public  void validaInicio()
                 Snackbar snackbar= Snackbar.make(view,"GPS Autorizado",Snackbar.LENGTH_LONG);
                 snackbar.show();
                 File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "/IndarApp/PDF");
+                File carpetaArt = new File(Environment.getExternalStorageDirectory(),"/IndarApp/ART");
 
                 if (!mediaStorageDir.exists()) {
                     if (!mediaStorageDir.mkdirs()) {
+                        Log.d("IndarApp", "failed to create directory");
+                    }
+
+                }
+                if(!carpetaArt.exists())
+                {
+                    if(!carpetaArt.mkdirs())
+                    {
                         Log.d("IndarApp", "failed to create directory");
                     }
                 }
             } else {
                 Toast.makeText(getApplicationContext(), "You denied write external storage permission.", Toast.LENGTH_LONG).show();
             }
+
         }
     }
 
@@ -176,12 +186,22 @@ public  void validaInicio()
 
 
             File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "/IndarApp/PDF");
+            File carpetaArt = new File(Environment.getExternalStorageDirectory(),"/IndarApp/ART");
 
             if (!mediaStorageDir.exists()) {
                 if (!mediaStorageDir.mkdirs()) {
                     Log.d("IndarApp", "failed to create directory");
                 }
             }
+            if(!carpetaArt.exists())
+            {
+                if(!carpetaArt.mkdirs())
+                {
+                    Log.d("IndarApp", "failed to create directory");
+                }
+                Log.i("IndarApp","se crea carpeta");
+            }
+
         }
 
 

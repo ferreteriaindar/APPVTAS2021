@@ -198,7 +198,7 @@ public class BlueToothController extends Fragment {
              {
                  Log.i("bluetooth","No puerto bluetooth");
              }
-             if(bluetoothAdapter.isEnabled())
+             if(!bluetoothAdapter.isEnabled())
              {
                  Log.i("bluetooth","si encontró");
                  Intent enableBt =new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -250,7 +250,7 @@ public class BlueToothController extends Fragment {
 
         }catch (Exception ex)
         {
-
+            bluetoothSocket.close();
         }
     }
 

@@ -83,6 +83,8 @@ public class DownloadBases  extends AsyncTask<Void,String,Boolean> {
 
         //publishProgress("Descarga Promos");
       //  descargaPDF();
+        //publishProgress("Descarga Articulos");
+       // descargaART();
 
         p.dismiss();
         return true;
@@ -215,7 +217,6 @@ public class DownloadBases  extends AsyncTask<Void,String,Boolean> {
         try {
             response = client.newCall(request).execute();
 
-
             String resultado = response.body().string();
 
 
@@ -296,7 +297,40 @@ public class DownloadBases  extends AsyncTask<Void,String,Boolean> {
 
 
 
+    public  boolean descargaART()
+    {
+        File ruta= new File(Environment.getExternalStorageDirectory(), "/IndarApp/ART/art.zip");
 
+        try {
+            FileOutputStream file = new FileOutputStream(ruta);
+            OkHttpClient client = new OkHttpClient();
+
+            MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+            RequestBody body = RequestBody.create(mediaType, "zona="+zona+"&undefined=");
+            Request request = new Request.Builder()
+                    .url(prefs.getString("server","")+ni.getResources().getString(R.string.WEBARTDOWNLOAD))
+                    .post(body)
+                    .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                    .addHeader("cache-control", "no-cache")
+                    .addHeader("Postman-Token", "4c22a0c4-ecfc-4090-a6ab-e38f9c0372c7")
+                    .build();
+
+            Response response = client.newCall(request).execute();
+            InputStream input =  new ByteArrayInputStream(response.body().bytes());
+            byte[] buffer = new byte[1024];
+            int len = 0;
+            while ((len = input .read(buffer)) > 0) {
+                file .write(buffer, 0, len );
+            }
+
+            file .close();
+            p.dismiss();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 
 
@@ -338,6 +372,8 @@ public class DownloadBases  extends AsyncTask<Void,String,Boolean> {
                       cxcCliente.setDiasMoratorios(c.getInt("DiasMoratorios"));
                       cxcCliente.setSaldo(Float.parseFloat(c.getString("Saldo")));
                       cxcCliente.setReferencia(c.getString("Referencia"));
+
+                      cxcCliente.setDescuento(Float.parseFloat(c.getString("descuento")));
                       db.obtenerCXCZona(cxcCliente);
 
                   }

@@ -49,6 +49,7 @@ public class UPLOADinfo  extends AsyncTask<Void,String,Boolean> {
     @Override
     protected Boolean doInBackground(Void... voids) {
          uploadVisitasV2();
+         Log.i("cobro"," si entra");
         uploadCobros();
         p.dismiss();
 
