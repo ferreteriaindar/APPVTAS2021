@@ -10,7 +10,7 @@ import java.io.File;
 
 public class db extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 19;
     //VERSION 1  pruebas
     //VERSION 2  solo alta tabla de clientes
     //VERSION 3  se crea la tabla de art
@@ -24,6 +24,12 @@ public class db extends SQLiteOpenHelper {
     //VERSION 12 Se crea ta Table subirCobro y subirCobroD  para los recibos de cobro CXC
     //VERSION 13 SE Agregan campor en la tabla de VISITAS   latitud y longitud cobranza
     //VERSION 14 SE agrega el campo  de descuento en la tabla CXCCLIENTE
+    //VERSION 15 se agrega campo de  referencia en cobro
+    //VERSION 16 Se agrega  campos (descuento y aplicadestco para los cobros
+    //VERSION 17  SE agrega  las tablas Cobro y CobroD
+    //VERSION 18 Se agrega la tabla de visitasHistorico
+    //VERSION 19 Se agrega campo finvisita,y las coordenada de fin visita   en la tabla visitas y visitas historico
+
     public static final String DATABASE_NAME = "indarAPP";
 
 
@@ -85,7 +91,10 @@ public class db extends SQLiteOpenHelper {
                 "    latitudPromociones REAL,\n" +
                 "    longitudPromociones REAL,\n" +//14
                 "    latitudCobranza REAL,\n"  +
-                "    longitudCobranza REAL \n"  +
+                "    longitudCobranza REAL, \n"  +
+                "    fechaFin         TEXT,\n"  +
+                "    longitudFin       REAL,\n" +
+                "    latitudFin        REAL"+
                 ");");
 
         db.execSQL("CREATE TABLE cxcCliente (\n" +
@@ -124,14 +133,62 @@ public class db extends SQLiteOpenHelper {
                 "    cliente   TEXT    NOT NULL,\n" +
                 "    zona      TEXT    NOT NULL,\n" +
                 "    formaPago TEXT,\n" +
-                "    importe   REAL\n" +
+                "    importe   REAL,\n" +
+                "    referencia TEXT    NOT NULL,\n" +
+                "    fechapago  TEXT\n" +
                 ");\n");
 
         db.execSQL("CREATE TABLE subirCobroD (\n" +
                 "    idsubirCobro INTEGER NOT NULL,\n" +
                 "    mov          TEXT,\n" +
                 "    movid        TEXT,\n" +
-                "    importe      REAL\n" +
+                "    importe      REAL,\n" +
+                "    descuento     REAL,\n"+
+                "    aplicadescto  TEXT\n"+
+                ");\n");
+
+        db.execSQL("CREATE TABLE Cobro (\n" +
+                "    IdCobro       INTEGER NOT NULL\n" +
+                "                          PRIMARY KEY,\n" +
+                "    Cliente       TEXT    REFERENCES clientes (Cliente),\n" +
+                "    FormaPago     TEXT,\n" +
+                "    Referencia    TEXT,\n" +
+                "    importe       REAL,\n" +
+                "    fechaPago     TEXT,\n" +
+                "    fechaRegistro TEXT,\n" +
+                "    usuario       TEXT,\n" +
+                "    numCobro      INT\n" +
+                ");");
+
+        db.execSQL("CREATE TABLE CobroD (\n" +
+                "    IdCobro      INTEGER REFERENCES Cobro (IdCobro),\n" +
+                "    Mov          TEXT,\n" +
+                "    MovId        TEXT,\n" +
+                "    importe      REAL,\n" +
+                "    descuento    REAL,\n" +
+                "    aplicaDescto TEXT\n" +
+                ");");
+
+        db.execSQL("CREATE TABLE visitasHistorico (\n" +
+                "    cliente             TEXT NOT NULL,\n" +
+                "    fechaInicio         TEXT NOT NULL,\n" +
+                "    fechaCobranza       TEXT,\n" +
+                "    fechaPromociones    TEXT,\n" +
+                "    fechaVenta          TEXT,\n" +
+                "    latitud             REAL,\n" +
+                "    longitud            REAL,\n" +
+                "    latitudPedido       REAL,\n" +
+                "    longitudPedido      REAL,\n" +
+                "    fechaPostVenta      TEXT,\n" +
+                "    latitudPostVenta    REAL,\n" +
+                "    longitudPostVenta   REAL,\n" +
+                "    latitudPromociones  REAL,\n" +
+                "    longitudPromociones REAL,\n" +
+                "    latitudCobranza     REAL,\n" +
+                "    longitudCobranza    REAL,\n" +
+                "    fechaFin            TEXT,\n" +
+                "    latitudFin          REAL,\n" +
+                "    longitudFin         REAL\n"  +
                 ");\n");
 
     }
@@ -148,6 +205,10 @@ public class db extends SQLiteOpenHelper {
         db.execSQL("drop table if exists "+"especificos ");
         db.execSQL("drop table if exists "+"subirCobroD");
         db.execSQL("drop table if exists "+"subirCobro");
+        db.execSQL("drop table if exists "+"Cobro");
+        db.execSQL("drop table if exists "+"CobroD");
+        db.execSQL("drop table if exists "+" visitasHistorico");
+
 
         onCreate(db);
     }

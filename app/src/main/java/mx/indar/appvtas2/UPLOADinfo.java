@@ -74,6 +74,7 @@ public class UPLOADinfo  extends AsyncTask<Void,String,Boolean> {
         Snackbar.make(ni.findViewById(R.id.contenidoNav), "Datos Entregados", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
 
+
         p.dismiss();
     }
 
@@ -119,6 +120,12 @@ public class UPLOADinfo  extends AsyncTask<Void,String,Boolean> {
                         obj.put("fechaCobranza",JSONObject.NULL);
                     else
                     obj.put("fechaCobranza",v.get(i).getFechaCobranza());
+                    if(v.get(i).getFechaFin()==null)
+                        obj.put("fechaFin",JSONObject.NULL);
+
+                    else  obj.put("fechaFin",v.get(i).getFechaFin());
+                    obj.put("latitudFin",v.get(i).getLatitudFin());
+                    obj.put("longitudFin",v.get(i).getLongitudFin());
                     jsonArray.put(obj);
                     JSONObject visistasJson = new JSONObject();
                     visistasJson.put("visitas",jsonArray);
@@ -276,6 +283,8 @@ public class UPLOADinfo  extends AsyncTask<Void,String,Boolean> {
                 obj.put("zona",listsCobro.get(i).getZona());
                 obj.put("importe",listsCobro.get(i).getImporte());
                 obj.put("formaPago",listsCobro.get(i).getFormaPago());
+                obj.put("referencia",listsCobro.get(i).getReferencia());
+                obj.put("fechapago",listsCobro.get(i).getFechapago());
                // obj.put("mov",listaCobroD.get(0).getMov());
 
                 JSONArray jsonArrayDetalle = new JSONArray();
@@ -285,6 +294,8 @@ public class UPLOADinfo  extends AsyncTask<Void,String,Boolean> {
                 objDetalle.put("mov",listaCobroD.get(j).getMov());
                 objDetalle.put("movid",listaCobroD.get(j).getMovid());
                 objDetalle.put("importeMov",listaCobroD.get(j).getImporte());
+                objDetalle.put("descuento",listaCobroD.get(j).getDescuento());
+                objDetalle.put("aplicaDescto",listaCobroD.get(j).getAplicaDescto());
                 jsonArrayDetalle.put(objDetalle);
                 }
                 obj.put("MOV",jsonArrayDetalle);

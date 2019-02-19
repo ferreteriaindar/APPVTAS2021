@@ -69,7 +69,21 @@ public class documentoCXC {
     }
 
     int dias;
-    String mov,movid,fechaemision,cliente,usuario;
+    String mov;
+    String movid;
+    String fechaemision;
+    String cliente;
+    String usuario;
+
+    public String getAplicaDescto() {
+        return aplicaDescto;
+    }
+
+    public void setAplicaDescto(String aplicaDescto) {
+        this.aplicaDescto = aplicaDescto;
+    }
+
+    String aplicaDescto;
     float importe;
 
     public float getDescuento() {
@@ -81,6 +95,16 @@ public class documentoCXC {
     }
 
     float descuento;
+
+    public float getImportefacturaFinal() {
+        return importefacturaFinal;
+    }
+
+    public void setImportefacturaFinal(float importefacturaFinal) {
+        this.importefacturaFinal = importefacturaFinal;
+    }
+
+    float importefacturaFinal;
 
 
 }

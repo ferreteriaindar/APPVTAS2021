@@ -141,7 +141,11 @@ public class DialogFormasDPagos extends DialogFragment {
             bundle.putString("banco",spinnerBanco.getSelectedItem().toString());
             bundle.putString("referencia",referencia.getText().toString());
         }
-
+        else
+        {
+            bundle.putString("banco","");
+            bundle.putString("referencia","N/A");
+        }
         bundle.putInt("año",años);
         bundle.putInt("mes",mes);
         bundle.putInt("dia",dia);

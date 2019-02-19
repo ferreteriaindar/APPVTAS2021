@@ -36,10 +36,14 @@ import java.io.InputStreamReader;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.zip.GZIPInputStream;
 
+import mx.indar.appvtas2.dbClases.MenuClientes.Cobro;
+import mx.indar.appvtas2.dbClases.MenuClientes.CobroD;
+import mx.indar.appvtas2.dbClases.MenuClientes.visitasHistorico;
 import mx.indar.appvtas2.dbClases.art;
 import mx.indar.appvtas2.dbClases.cliente;
 import mx.indar.appvtas2.dbClases.cxcCliente;
@@ -80,7 +84,12 @@ public class DownloadBases  extends AsyncTask<Void,String,Boolean> {
         descargaCXCZona(prefs.getString("usuario",""));
         publishProgress("Descarga Especificos");
         descargaEspecificos(prefs.getString("usuario",""));
-
+        publishProgress("Descarga Cobros");
+        descargaCobros(prefs.getString("usuario",""),"cabecera");
+        publishProgress("Descarga CobrosDetalle");
+        descargaCobros(prefs.getString("usuario",""),"detalle");
+        publishProgress("Descarga Visitas");
+        descargaVisitasHistorico(prefs.getString("usuario",""));
         //publishProgress("Descarga Promos");
       //  descargaPDF();
         //publishProgress("Descarga Articulos");
@@ -397,6 +406,82 @@ public class DownloadBases  extends AsyncTask<Void,String,Boolean> {
 
 
 
+
+          public  boolean descargaCobros(String zona,String parte)
+          {
+
+              Log.i("cobros",zona+parte);
+              OkHttpClient client = new OkHttpClient();
+              Response response = null;
+              MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+              RequestBody body = RequestBody.create(mediaType, "zona="+zona+"&parte="+parte+"&undefined=");
+              Request request = new Request.Builder()
+                      .url(prefs.getString("server","")+ni.getResources().getString(R.string.WEBCobros))
+                      .post(body)
+                      .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                     // .addHeader("cache-control", "no-cache")
+                    //  .addHeader("Postman-Token", "35a6a5bb-ab81-4702-a40d-57f69555a54e")
+                      .build();
+
+
+              try {
+                  response = client.newCall(request).execute();
+                  String resultado = response.body().string();
+                  Log.i("cobros",resultado);
+                  JSONObject reader = new JSONObject(resultado);
+                  JSONArray cobroJson = reader.getJSONArray("Table");
+
+
+                  dbAdapter db =new dbAdapter(ni.getApplicationContext());
+                  db.open(true);
+
+                  if(parte.equals("cabecera")) {
+                      db.borrarCobro();
+                      for (int i = 0; i < cobroJson.length(); i++) {
+                          JSONObject c = cobroJson.getJSONObject(i);
+                          Cobro cobro = new Cobro();
+                          cobro.setId(c.getInt("IdCobro"));
+                          cobro.setCliente(c.getString("Cliente"));
+                          cobro.setFormaPago(c.getString("FormaPago"));
+                          cobro.setReferencia(c.getString("Referencia"));
+                          cobro.setImporte(Float.parseFloat(c.getString("importe")));
+                          cobro.setFechaPago(c.getString("fechaPago"));
+                          cobro.setFechaRegistro(c.getString("fechaRegistro"));
+                          cobro.setUsuario(c.getString("usuario"));
+                          cobro.setNumCobro(Integer.parseInt(c.getString("numCobro")));
+                          db.insertaCobro(cobro);
+                      }
+                  }
+                  else
+                  {
+                      db.borrarCobroD();
+                      for (int i = 0; i < cobroJson.length(); i++) {
+                          JSONObject c= cobroJson.getJSONObject(i);
+                          CobroD cd =new CobroD();
+                          cd.setIdCobro(c.getInt("IdCobro"));
+                          cd.setMov(c.getString("Mov"));
+                          cd.setMovid(c.getString("MovId"));
+                          cd.setImporte(Float.parseFloat( c.getString("importe")));
+                          cd.setDescuento(Float.parseFloat(c.getString("descuento")));
+                          cd.setAplicaDescto(c.getString("aplicaDescto"));
+                           db.insertaCobroD(cd);
+                      }
+                  }
+                db.close(true);
+
+              } catch (IOException e) {
+                  e.printStackTrace();
+              }catch (JSONException EX) {
+                  EX.printStackTrace();
+              }catch (java.sql.SQLException e) {
+                  e.printStackTrace();
+              }
+
+
+            return false;
+          }
+
+
     public  boolean descargaEspecificos(String zona) {
 
         String  ejercicio,periodo;
@@ -477,6 +562,86 @@ public class DownloadBases  extends AsyncTask<Void,String,Boolean> {
 
         db.close(true);
         return  false;
+    }
+
+
+    public  boolean descargaVisitasHistorico(String zona)
+    {
+        OkHttpClient client = new OkHttpClient();
+        Response response = null;
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, "zona=" + zona);
+        Request request = new Request.Builder()
+                .url(prefs.getString("server", "") + ni.getResources().getString(R.string.WEBvisitasHistorico))
+                .post(body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                // .addHeader("Cache-Control", "no-cache")
+                //   .addHeader("Postman-Token", "3016ad7d-a309-449a-81cd-e1d5b037530f")
+                .build();
+        try {
+            response = client.newCall(request).execute();
+            String resultado = response.body().string();
+
+            JSONObject reader = new JSONObject(resultado);
+           JSONArray visitaJson = reader.getJSONArray("Table");
+           dbAdapter db = new dbAdapter(ni.getApplicationContext());
+            db.open(true);
+            db.borrarvisitasHistorico();
+            for (int i = 0; i < visitaJson.length(); i++) {
+
+                JSONObject c = visitaJson.getJSONObject(i);
+                visitasHistorico vh =new visitasHistorico();
+               // e.setCuota(Float.parseFloat(c.getString("Cuota")));
+                vh.setCliente(c.getString("cliente"));
+                vh.setFechaInicio(c.getString("fechaInicio"));
+                vh.setFechaCobranza(c.getString("fechaCobranza"));
+                vh.setFechaPromociones(c.getString("fechaPromociones"));
+                if(!c.getString("fechaFin").equals("null"))
+                    vh.setFechaFin("0");
+                else
+                vh.setFechaFin(c.getString("fechaFin"));
+                vh.setLatitud(Float.parseFloat(c.getString("latitud")));
+                vh.setLongitud(Float.parseFloat(c.getString("longitud")));
+                if (!c.getString("longitudPedido").equals("null"))
+                vh.setLongitudPedido(Float.parseFloat(c.getString("longitudPedido")));
+                else vh.setLongitudPedido(0.0f);
+                if(!c.getString("latitudPedido").equals("null"))
+                vh.setLatitudPedido(Float.parseFloat(c.getString("latitudPedido")));
+                else vh.setLatitudPedido(0.0f);
+                if(!c.getString("longitudPromociones").equals("null"))
+                vh.setLongitudPromociones(Float.parseFloat(c.getString("longitudPromociones")));
+                else vh.setLongitudPromociones(0.0f);
+                if(!c.getString("latitudPromociones").equals("null"))
+                vh.setLatitudPromociones(Float.parseFloat(c.getString("latitudPromociones")));
+                else vh.setLatitudPromociones(0.0f);
+                if(!c.getString("latitudCobranza").equals("null"))
+                vh.setLatitudCobranza(Float.parseFloat(c.getString("latitudCobranza")));
+                else vh.setLatitudCobranza(0.0f);
+                if(!c.getString("longitudCobranza").equals("null"))
+                vh.setLongitudCobranza(Float.parseFloat(c.getString("longitudCobranza")));
+                else vh.setLongitudCobranza(0.0f);
+                if(!c.getString("latitudFin").equals("null"))
+                    vh.setLatitudFin(Float.parseFloat(c.getString("latitudFin")));
+                else vh.setLatitudFin(0.0f);
+                if(!c.getString("longitudFin").equals("null"))
+                    vh.setLongitudFin(Float.parseFloat(c.getString("longitudFin")));
+                else vh.setLongitudFin(0.0f);
+
+                db.insertVisitasHistorico(vh);
+
+
+            }
+            db.close(true);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }

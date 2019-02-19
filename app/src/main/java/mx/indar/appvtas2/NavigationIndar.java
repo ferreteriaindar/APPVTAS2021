@@ -1,10 +1,12 @@
 package mx.indar.appvtas2;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -37,6 +39,7 @@ import mx.indar.appvtas2.dbClases.visita;
 import mx.indar.appvtas2.fragmentos.clientes.ClientesFragment;
 import mx.indar.appvtas2.fragmentos.clientes.agenda.AgendasFragment;
 import mx.indar.appvtas2.fragmentos.clientes.agenda.MapsActivityVisitas;
+import mx.indar.appvtas2.fragmentos.clientes.agenda.VisitaAgendas;
 
 public class NavigationIndar extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -279,14 +282,54 @@ public class NavigationIndar extends AppCompatActivity
                     startActivity(intent);
 
                 } else if (id == R.id.nav_Mensajes) {
-                    miFragment = new BlueToothController();
+                  /*  miFragment = new BlueToothController();
                     fragmentSeleccionado = true;
+*/
+                    dbAdapter db = new dbAdapter(getApplicationContext());
+                    try {
+                        db.open(true);
+                      if(  db.tienePendientes()) {
+                          UPLOADinfo up = new UPLOADinfo(NavigationIndar.this, "");
+                          up.execute();
+                      }
+                        DownloadBases downb = new DownloadBases(NavigationIndar.this, prefs.getString("usuario", ""));
+
+                        downb.execute();
+
+                        db.close(true);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                } else if (id == R.id.nav_share) {  //// DESCARGAR INFO
+
+                    dbAdapter db = new dbAdapter(getApplicationContext());
+                    try {
+                        db.open(true);
+                        if(  db.tienePendientes()) {
+                            db.close(true);
+                            //  AlertDialog.Builder builder = new AlertDialog.Builder(getActivity().getApplicationContext());
+                            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(NavigationIndar.this);
+                            builder.setTitle("Tienes Pendientes por entregar \n Primero envia tu INFO");
+
+                            builder.setPositiveButton("ENTERADO", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                                    }
+                            });
 
 
-                } else if (id == R.id.nav_share) {
-                    DownloadBases downb = new DownloadBases(NavigationIndar.this, prefs.getString("usuario", ""));
+                            builder.show();
+                        }
+                        else {
+                            db.close(true);
+                            DownloadBases downb = new DownloadBases(NavigationIndar.this, prefs.getString("usuario", ""));
+                            downb.execute();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
 
-                    downb.execute();
 
 
                     //downb.p.dismiss();

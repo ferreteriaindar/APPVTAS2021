@@ -46,5 +46,8 @@
     <string name="WEBchecaVersion">WebService1.asmx/checaVersion</string>
     <string name="update">Actualizar IndarAPP</string>
     <string name="WEBARTDOWNLOAD">WebService1.asmx/articulos</string>
+    <string name="WEBCobros">WebService1.asmx/CobrosZona</string>
+    <string name="WEBvisitasHistorico">WebService1.asmx/visitasHistorico</string>
+
 
 </resources>

@@ -106,15 +106,15 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
                     formaPago=data.getExtras().getString("formapago");
                     importeFinal= Float.parseFloat( data.getExtras().getString("importe"));
                     Log.i("cobrar","importe final:"+importeFinal+"");
-                    if(!formaPago.equals("Efectivo"))
-                    {
-                        Log.i("cobrar",data.getExtras().getString("banco"));
-                        Log.i("cobrar",data.getExtras().getString("referencia"));
-                        referencia=data.getExtras().getString("banco")+data.getExtras().getString("referencia");
-                        año=data.getExtras().getInt("año");
-                        mes=data.getExtras().getInt("mes");
-                        dia=data.getExtras().getInt("dia");
-                        Log.i("cobrar",referencia+"referencia");
+                  //  if(!formaPago.equals("Efectivo")) {
+                        Log.i("cobrar", data.getExtras().getString("banco"));
+                        Log.i("cobrar", data.getExtras().getString("referencia"));
+                        referencia = data.getExtras().getString("banco") + data.getExtras().getString("referencia");
+                        año = data.getExtras().getInt("año");
+                        mes = data.getExtras().getInt("mes");
+                        dia = data.getExtras().getInt("dia");
+                        Log.i("cobrar", referencia + "referencia");
+
 
                         importe=0;
                         for(int i=0;i<listadocumentos.size();i++)
@@ -140,20 +140,41 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
                             Log.i("cheque",(listadocumentos.get(i).getDias()+"diasdoc"+diasparaCheque+"diferencia dias"));
                                 Log.i("cheque",(listadocumentos.get(i).getDias()+diasparaCheque)+"diferencia dias");
                                 if(formaPago.equals("Cheque")) {
-                                    if (listadocumentos.get(i).getDias() <= 0 && listadocumentos.get(i).getDescuento() > 0 && (listadocumentos.get(i).getDias()+diasparaCheque)<=0)
+                                    if (listadocumentos.get(i).getDias() <= 0 && listadocumentos.get(i).getDescuento() > 0 && (listadocumentos.get(i).getDias()+diasparaCheque)<=0) {
                                         importe += listadocumentos.get(i).getImporte() * (1 - (listadocumentos.get(i).getDescuento() / 100));
-                                    else importe += listadocumentos.get(i).getImporte();
+                                        listadocumentos.get(i).setImportefacturaFinal(listadocumentos.get(i).getImporte() * (1 - (listadocumentos.get(i).getDescuento() / 100)));
+                                        listadocumentos.get(i).setAplicaDescto("SI");
+                                        Log.i("cobro","importefacturadesderesult"+listadocumentos.get(i).getImportefacturaFinal());
+                                    }
+                                    else {
+                                        importe += listadocumentos.get(i).getImporte();
+                                                    listadocumentos.get(i).setImportefacturaFinal(listadocumentos.get(i).getImporte());
+                                        listadocumentos.get(i).setAplicaDescto("NO");
+                                        Log.i("cobro","importefacturadesderesult"+listadocumentos.get(i).getImportefacturaFinal());
+                                    }
                                 }
                                 else {
-                                    if (listadocumentos.get(i).getDias() <= 0 && listadocumentos.get(i).getDescuento() > 0)
+                                    Log.i("cobro","si entro en efectivo");
+                                    if (listadocumentos.get(i).getDias() <= 0 && listadocumentos.get(i).getDescuento() > 0) {
                                         importe += listadocumentos.get(i).getImporte() * (1 - (listadocumentos.get(i).getDescuento() / 100));
-                                    else importe += listadocumentos.get(i).getImporte();
+                                                    listadocumentos.get(i).setImportefacturaFinal(listadocumentos.get(i).getImporte() * (1 - (listadocumentos.get(i).getDescuento() / 100)));
+                                        listadocumentos.get(i).setAplicaDescto("SI");
+                                                    Log.i("cobro","importefacturadesderesult"+listadocumentos.get(i).getImportefacturaFinal());
+                                        Log.i("cobro","aplicadescto"+listadocumentos.get(i).getAplicaDescto());
+                                    }
+                                    else {
+                                        importe += listadocumentos.get(i).getImporte();
+                                                    listadocumentos.get(i).setImportefacturaFinal(listadocumentos.get(i).getImporte());
+                                        listadocumentos.get(i).setAplicaDescto("NO");
+                                        Log.i("cobro","importefacturadesderesult"+listadocumentos.get(i).getImportefacturaFinal());
+                                        Log.i("cobro","aplicadescto"+listadocumentos.get(i).getAplicaDescto());
+                                    }
 
                                 }
 
                         }
-                    }
-                    else referencia="N/A";
+                   /* }
+                    else referencia="N/A";*/
                 }
                 TxtReferencia.setText(referencia);
 
@@ -330,14 +351,20 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
             sd.setCliente(cliente);
             sd.setFormaPago(formaPago);
             sd.setImporte(importeFinal);
+            sd.setReferencia(referencia);
+            sd.setFechapago(txtFechaPago.getText().toString());
             sd.setZona(prefs.getString("usuario",""));
              id=db.insertarsubirCobro(sd);
             for(int j=0;j<listadocumentos.size();j++) {
                 subirCobroD scd = new subirCobroD();
                 scd.setIdSubirCobro(id.intValue());
-                scd.setImporte(listadocumentos.get(j).getImporte());
+                scd.setImporte(listadocumentos.get(j).getImportefacturaFinal());
+                Log.i("cobro","importefinalfactura"+listadocumentos.get(j).getImportefacturaFinal());
                 scd.setMov(listadocumentos.get(j).getMov());
                 scd.setMovid(listadocumentos.get(j).getMovid());
+                scd.setDescuento(listadocumentos.get(j).getDescuento());
+                Log.i("cobro","getdescuento"+listadocumentos.get(j).getDescuento());
+                scd.setAplicaDescto(listadocumentos.get(j).getAplicaDescto());
 
                 db.insertarsubirCobroD(scd);
             }
@@ -388,7 +415,7 @@ public class cobrarFragment extends Fragment implements NavigationIndar.IOnBackP
             sd.setFormaPago(listaformaPago.get(i).getTipoPago());
             Log.i("cobro",listaformaPago.get(i).getTipoPago()+"tipopago");
             sd.setImporte(listaformaPago.get(i).getImporte());
-            sd.setZona(prefs.getString("usuario",""));
+            sd.setUsuario(prefs.getString("usuario",""));
             Long id=db.insertarsubirCobro(sd);
 
             for(int j=0;j<listadocumentos.size();j++) {

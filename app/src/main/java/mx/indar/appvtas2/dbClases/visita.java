@@ -94,10 +94,37 @@ public class visita {
     String fechaCobranza;
     String fechaPromociones;
     String fechaVenta;
+
+    public String getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(String fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public float getLatitudFin() {
+        return latitudFin;
+    }
+
+    public void setLatitudFin(float latitudFin) {
+        this.latitudFin = latitudFin;
+    }
+
+    public float getLongitudFin() {
+        return longitudFin;
+    }
+
+    public void setLongitudFin(float longitudFin) {
+        this.longitudFin = longitudFin;
+    }
+
+    String fechaFin;
     float latitud;
     float longitud;
     float latitudPedido;
     float longitudPedido;
+    float latitudFin,longitudFin;
 
     public String getFechaPostVenta() {
         return fechaPostVenta;

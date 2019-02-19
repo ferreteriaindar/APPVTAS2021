@@ -375,6 +375,11 @@ public class VisitaAgendas extends Fragment implements NavigationIndar.IOnBackPr
         builder.setPositiveButton("SALIR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                GPStracker g = new GPStracker(getActivity());
+                Location l = g.getLocation();
+                Log.i("gps","gps");
+                Log.i("gps",l.getLongitude()+"");
+                actualizaBaseAvance(idVisita,"fin",(float)l.getLatitude(),(float)l.getLongitude());
                 setResultadoSalir(true);
                 getActivity().getSupportFragmentManager().popBackStack();
                 //  dialogInterface.dismiss();

@@ -46,7 +46,29 @@ public class subirCobro {
     }
 
     Integer id;
-    String cliente,zona,formaPago;
+    String cliente;
+    String zona;
+    String formaPago;
+
+    public String getFechapago() {
+        return fechapago;
+    }
+
+    public void setFechapago(String fechapago) {
+        this.fechapago = fechapago;
+    }
+
+    String fechapago;
+
+    public String getReferencia() {
+        return referencia;
+    }
+
+    public void setReferencia(String referencia) {
+        this.referencia = referencia;
+    }
+
+    String referencia;
     float importe;
 
 }

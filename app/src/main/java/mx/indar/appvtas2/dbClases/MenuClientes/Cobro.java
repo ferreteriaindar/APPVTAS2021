@@ -1,6 +1,8 @@
 package mx.indar.appvtas2.dbClases.MenuClientes;
 
-public class Cobro {
+import android.os.Parcelable;
+
+public class Cobro  {
 
     public Cobro() {
     }
@@ -21,12 +23,12 @@ public class Cobro {
         this.cliente = cliente;
     }
 
-    public String getZona() {
-        return zona;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setZona(String zona) {
-        this.zona = zona;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public String getFormaPago() {
@@ -37,12 +39,12 @@ public class Cobro {
         this.formaPago = formaPago;
     }
 
-    public String getFecha() {
-        return fecha;
+    public String getFechaRegistro() {
+        return fechaRegistro;
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setFechaRegistro(String fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
     }
 
     public float getImporte() {
@@ -54,7 +56,28 @@ public class Cobro {
     }
 
     Integer id,numCobro;
-    String cliente,zona,formaPago,fecha;
+    String cliente;
+    String usuario;
+    String formaPago;
+    String fechaRegistro;
+
+    public Integer getNumCobro() {
+        return numCobro;
+    }
+
+    public void setNumCobro(Integer numCobro) {
+        this.numCobro = numCobro;
+    }
+
+    public String getFechaPago() {
+        return fechaPago;
+    }
+
+    public void setFechaPago(String fechaPago) {
+        this.fechaPago = fechaPago;
+    }
+
+    String fechaPago;
 
     public String getReferencia() {
         return referencia;

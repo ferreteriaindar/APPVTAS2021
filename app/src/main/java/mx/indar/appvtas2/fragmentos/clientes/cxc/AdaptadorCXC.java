@@ -130,6 +130,7 @@ public class AdaptadorCXC extends RecyclerView.Adapter<AdaptadorCXC.ViewHolder> 
                 cxc.setMov(listacxc.get(position).getMov());
                 cxc.setMovid(   holder.movid.getText().toString().replace(listacxc.get(position).getMov()+ " ",""));
                 cxc.setDescuento(     listacxc.get(position).getDescuento());
+
                 cxc.setDias(listacxc.get(position).getDiasMoratorios());
 
 

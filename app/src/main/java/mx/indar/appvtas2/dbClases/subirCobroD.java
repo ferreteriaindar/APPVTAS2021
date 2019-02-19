@@ -37,6 +37,24 @@ public class subirCobroD {
     }
 
     Integer idSubirCobro;
-    String mov,movid;
+    String mov,movid,aplicaDescto;
     float importe;
+
+    public String getAplicaDescto() {
+        return aplicaDescto;
+    }
+
+    public void setAplicaDescto(String aplicaDescto) {
+        this.aplicaDescto = aplicaDescto;
+    }
+
+    public float getDescuento() {
+        return descuento;
+    }
+
+    public void setDescuento(float descuento) {
+        this.descuento = descuento;
+    }
+
+    float descuento;
 }

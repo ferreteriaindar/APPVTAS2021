@@ -20,7 +20,7 @@
         android:drawableLeft="@drawable/ic_usuario"
 
         android:ems="10"
-        android:hint="zona"
+        android:hint="usuario"
         android:inputType="textCapCharacters" />
 
     <EditText

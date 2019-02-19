@@ -3,10 +3,12 @@ package mx.indar.appvtas2;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +17,9 @@ import java.util.List;
 import java.util.Locale;
 
 import mx.indar.appvtas2.R.string;
+import mx.indar.appvtas2.dbClases.MenuClientes.Cobro;
+import mx.indar.appvtas2.dbClases.MenuClientes.CobroD;
+import mx.indar.appvtas2.dbClases.MenuClientes.visitasHistorico;
 import mx.indar.appvtas2.dbClases.art;
 import mx.indar.appvtas2.dbClases.cliente;
 import mx.indar.appvtas2.dbClases.cxcCliente;
@@ -72,6 +77,20 @@ public class dbAdapter {
         return database.insert("clientes", null, values);
     }
 
+
+    public boolean tienePendientes()
+    {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+       Log.i("update", dateFormat.format(cal.getTime())); //your formatted date here
+        long rows =DatabaseUtils.queryNumEntries(database, "visitas",
+                "fechainicio<=? ", new String[] {dateFormat.format(cal.getTime()).toString() });
+        Log.i("update",rows+"REGISTROS");
+        if(rows>=1)
+            return  true;
+        return false;
+    }
 /*
     public cliente getContact(int id) throws SQLException {
 // Queries performed on database table return cursors
@@ -93,6 +112,9 @@ public class dbAdapter {
     }
     public  void borrarArt(){database.execSQL("delete from art");}
     public  void borrarEspecificos(){database.execSQL("delete from especificos");}
+    public  void borrarCobro(){database.execSQL("delete from Cobro");}
+    public  void borrarCobroD(){database.execSQL("delete from CobroD");}
+    public  void borrarvisitasHistorico(){database.execSQL("delete from visitasHistorico");}
 
     public  long llenaArticulos(art a)
     {
@@ -166,9 +188,9 @@ public class dbAdapter {
     public  long registraVisitaCte(visita v)
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                "yyyy-MM-dd kk:mm:ss",Locale.CANADA);
         Date date = new Date();
-
+        Log.i("fecha",dateFormat.format(date));
         ContentValues values = new ContentValues();
         values.put("cliente",v.getCliente());
         values.put("latitud",v.getLatitud());
@@ -198,6 +220,9 @@ public class dbAdapter {
                 vi.setLatitudCobranza(cursor.getFloat(15));
                 vi.setLongitudCobranza(cursor.getFloat(16));
                 vi.setFechaCobranza(cursor.getString(3));
+                vi.setFechaFin(cursor.getString(17));
+                vi.setLatitudFin(cursor.getFloat(18));
+                vi.setLongitudFin(cursor.getFloat(19));
                 v.add(vi);
             }while (cursor.moveToNext());
 
@@ -210,6 +235,61 @@ public class dbAdapter {
 
 
 
+    }
+
+    public  long insertVisitasHistorico(visitasHistorico vh)
+    {
+        ContentValues cv = new ContentValues();
+        cv.put("cliente",vh.getCliente());
+        cv.put("fechaInicio",vh.getFechaInicio());
+        cv.put("fechaCobranza",vh.getFechaCobranza());
+        cv.put("fechaPromociones",vh.getFechaPromociones());
+        cv.put("latitud",vh.getLatitud());
+        cv.put("longitud",vh.getLongitud());
+        cv.put("latitudPedido",vh.getLatitudPedido());
+        cv.put("longitudPedido",vh.getLongitudPedido());
+        cv.put("latitudPromociones",vh.getLatitudPromociones());
+        cv.put("longitudPromociones",vh.getLatitudPromociones());
+        cv.put("latitudCobranza",vh.getLatitudCobranza());
+        cv.put("longitudCobranza",vh.getLongitudCobranza());
+        return database.insert("visitasHistorico",null,cv);
+
+    }
+
+    public  List<visitasHistorico>  selectVisitasHistorico(String fecha,String tipo,String cliente)
+    {
+        List<visitasHistorico> vh = new ArrayList<>();
+        String query="select * from visitasHistorico where   date(fechainicio)='"+fecha+"'";
+        if(tipo.equals("cliente"))
+            query="select * from  visitasHistorico where cliente='"+fecha+"'";
+        if(tipo.equals("detalle"))
+            query="select * from  visitasHistorico where fechaInicio='"+fecha+"' and cliente='"+cliente+"'";
+        Log.i("map",query);
+        Cursor cursor = database.rawQuery(query,null);
+        if(cursor.moveToFirst())
+        {
+            do{
+                visitasHistorico histo = new visitasHistorico();
+                histo.setCliente(cursor.getString(0));
+                histo.setFechaInicio(cursor.getString(1));
+                histo.setFechaCobranza(cursor.getString(2));
+                histo.setFechaPromociones(cursor.getString(3));
+                histo.setFechaVenta(cursor.getString(4));
+                histo.setLatitud(Float.parseFloat(cursor.getString(5)));
+                histo.setLongitud(Float.parseFloat(cursor.getString(6)));
+                histo.setLatitudPedido(Float.parseFloat(cursor.getString(7)));
+                histo.setLongitudPedido(Float.parseFloat(cursor.getString(8)));
+                histo.setLatitudPromociones(Float.parseFloat(cursor.getString(12)));
+                histo.setLongitudPromociones(Float.parseFloat(cursor.getString(13)));
+                histo.setLatitudCobranza(Float.parseFloat(cursor.getString(14)));
+                histo.setLongitudCobranza(Float.parseFloat(cursor.getString(15)));
+                vh.add(histo);
+            }while (cursor.moveToNext());
+
+
+        }
+        cursor.close();
+        return vh;
     }
 
 
@@ -336,7 +416,7 @@ public class dbAdapter {
 
         ContentValues cv = new ContentValues();
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                "yyyy-MM-dd kk:mm:ss",Locale.CANADA);
         Date date = new Date();
         switch (avance)
         {
@@ -357,7 +437,10 @@ public class dbAdapter {
                               cv.put("latitudPostVenta",latitud);
                               cv.put("longitudPostVenta",longitud);
             break;
-
+            case "fin":  cv.put("fechaFin",dateFormat.format(date));
+                        cv.put("latitudFin",latitud);
+                        cv.put("longitudFin",longitud);
+            break;
         }
         return  database.update("visitas",cv,"idVisitas=?",new String[]{""+idvisitas});
 
@@ -404,6 +487,104 @@ public class dbAdapter {
 
 
     ///////////////////////////INICIO//////////////////////////////////////////////////
+    ////////////////////////RECIBOS DE COBRO app///////////////////////////////////////////////
+
+    public  void insertaCobro(Cobro c)
+    {
+        ContentValues cv = new ContentValues();
+        cv.put("IdCobro",c.getId());
+        cv.put("Cliente",c.getCliente());
+        cv.put("FormaPago",c.getFormaPago());
+        cv.put("Referencia",c.getReferencia());
+        cv.put("importe",c.getImporte());
+        cv.put("fechaPago",c.getFechaPago());
+        cv.put("fechaRegistro",c.getFechaRegistro());
+        cv.put("usuario",c.getUsuario());
+        cv.put("numCobro",c.getNumCobro());
+
+        database.insert("Cobro",null,cv);
+    }
+
+
+    public  void insertaCobroD(CobroD cd)
+    {
+        ContentValues cv = new ContentValues();
+        cv.put("IdCobro",cd.getIdCobro());
+        cv.put("Mov",cd.getMov());
+        cv.put("MovId",cd.getMovid());
+        cv.put("importe",cd.getImporte());
+        cv.put("descuento",cd.getDescuento());
+        cv.put("aplicaDescto",cd.getAplicaDescto());
+
+        database.insert("CobroD",null,cv);
+
+    }
+
+    public List<Cobro> SelectCobro(String cliente,int id)
+    {
+        List<Cobro> c = new ArrayList<>();
+
+        String query="select * from Cobro where cliente='"+cliente+"'";
+        if(id!=0)
+            query ="select * from  Cobro where cliente='"+cliente+"' and IdCobro="+id;
+        Cursor cursor = database.rawQuery(query,null);
+        {
+            if(cursor.moveToFirst()) {
+                do {
+                    Cobro cobro = new Cobro();
+                    cobro.setId(cursor.getInt(0));
+                    cobro.setCliente(cursor.getString(1));
+                    cobro.setFormaPago(cursor.getString(2));
+                    cobro.setReferencia(cursor.getString(3));
+                    cobro.setImporte(cursor.getFloat(4));
+                    cobro.setFechaPago(cursor.getString(5));
+                    Log.i("cobro","select"+cursor.getString(6));
+                    cobro.setFechaRegistro(cursor.getString(6));
+                    cobro.setUsuario(cursor.getString(7));
+                    cobro.setNumCobro(cursor.getInt(8));
+                    c.add(cobro);
+                } while (cursor.moveToNext());
+            }
+
+        }
+        cursor.close();
+        return  c;
+    }
+
+
+    public List<CobroD> selectCobroD (int IdCobro)
+    {
+        List<CobroD> c = new ArrayList<>();
+        String query="select * from CobroD where IdCobro="+IdCobro;
+        Cursor cursor = database.rawQuery(query,null);
+        {
+            if(cursor.moveToFirst()) {
+                do {
+                    CobroD cd = new CobroD();
+                    cd.setIdCobro(cursor.getInt(0));
+                    cd.setMov(cursor.getString(1));
+                    cd.setMovid(cursor.getString(2));
+                    cd.setImporte(cursor.getFloat(3));
+                    cd.setDescuento(cursor.getFloat(4));
+                    cd.setAplicaDescto(cursor.getString(5));
+                    c.add(cd);
+
+                } while (cursor.moveToNext());
+            }
+
+        }
+        cursor.close();
+        return  c;
+
+    }
+
+
+
+    ///////////////////////////FIN//////////////////////////////////////////////////
+
+
+
+    ///////////////////////////INICIO//////////////////////////////////////////////////
     ////////////////////////RECIBOS DE COBRO///////////////////////////////////////////////
 
     public  void  borrarRecibosDeCobro()
@@ -413,6 +594,8 @@ public class dbAdapter {
           database.execSQL("delete from subirCobro");
     }
 
+
+
     public  long insertarsubirCobro(subirCobro sc)
     {
         ContentValues cv = new ContentValues();
@@ -420,6 +603,11 @@ public class dbAdapter {
         cv.put("zona",sc.getZona());
         cv.put("formaPago",sc.getFormaPago());
         cv.put("importe",sc.getImporte());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd kk:mm:ss",Locale.CANADA);
+        Date date = new Date();
+        cv.put("fechapago",dateFormat.format(date));
+        cv.put("referencia",sc.getReferencia());
 
         return  database.insert("subirCobro",null,cv);
     }
@@ -433,6 +621,8 @@ public class dbAdapter {
         cv.put("mov",scd.getMov());
         cv.put("movid",scd.getMovid());
         cv.put("importe",scd.getImporte());
+        cv.put("descuento",scd.getDescuento());
+        cv.put("aplicadescto",scd.getAplicaDescto());
 
         database.insert("subirCobroD",null,cv);
 
@@ -452,6 +642,8 @@ public class dbAdapter {
                 sc.setZona(cursor.getString(2));
                 sc.setFormaPago(cursor.getString(3));
                 sc.setImporte(cursor.getFloat(4));
+                sc.setReferencia(cursor.getString(5));
+                sc.setFechapago(cursor.getString(6));
                 ListaCobro.add(sc);
             }while (cursor.moveToNext());
 
@@ -474,6 +666,8 @@ public class dbAdapter {
                scd.setMov(cursor.getString(1));
                scd.setMovid(cursor.getString(2));
                scd.setImporte(cursor.getFloat(3));
+               scd.setDescuento(cursor.getFloat(4));
+               scd.setAplicaDescto(cursor.getString(5));
                listasubirCobroD.add(scd);
             }while (cursor.moveToNext());
 
@@ -502,6 +696,10 @@ public class dbAdapter {
            database.execSQL("delete from especificos");
            database.execSQL("delete from subirCobro");
            database.execSQL("delete from subirCobroD");
+           database.execSQL("delete from Cobro");
+           database.execSQL("delete from CobroD");
+           database.execSQL("delete from visitasHistorico");
+
 
 
 

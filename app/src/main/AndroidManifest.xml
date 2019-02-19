@@ -71,7 +71,11 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".menuClientes.menuMain" />
-        <activity android:name=".menuClientes.Cobros.cobrosCte"></activity>
+        <activity android:name=".menuClientes.Cobros.cobrosCte" />
+        <activity android:name=".menuClientes.Cobros.cobroDetalle" />
+        <activity android:name=".fragmentos.clientes.agenda.VisitasCte" />
+        <activity android:name=".menuClientes.Visitas.visitasHistoria" />
+        <activity android:name=".menuClientes.Visitas.visitasHistoriaDetalle"></activity>
     </application>
 
 </manifest>
