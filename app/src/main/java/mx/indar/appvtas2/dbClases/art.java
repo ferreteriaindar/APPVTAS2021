@@ -1,6 +1,9 @@
 package mx.indar.appvtas2.dbClases;
 
 public class art {
+    public art() {
+    }
+
     public String getArticulo() {
         return Articulo;
     }
@@ -97,7 +100,47 @@ public class art {
     }
 
     String Descripcion1;
-    String Categoria;
-    float PrecioLista,Precio7,Precio8,CantidadMinimaVenta,CantidadMaximaVenta,disponible;
+    String Categoria,Proveedor,Linea;
+    float PrecioLista;
+    float Precio7;
+    float Precio8;
+    float CantidadMinimaVenta;
+    float CantidadMaximaVenta;
+    float disponible;
+
+    public String getProveedor() {
+        return Proveedor;
+    }
+
+    public void setProveedor(String proveedor) {
+        Proveedor = proveedor;
+    }
+
+    public String getLinea() {
+        return Linea;
+    }
+
+    public void setLinea(String linea) {
+        Linea = linea;
+    }
+
+    public float getPrecio2() {
+        return Precio2;
+    }
+
+    public void setPrecio2(float precio2) {
+        Precio2 = precio2;
+    }
+
+    public float getPrecio3() {
+        return Precio3;
+    }
+
+    public void setPrecio3(float precio3) {
+        Precio3 = precio3;
+    }
+
+    float Precio2;
+    float Precio3;
     Integer multiplo;
 }

@@ -10,7 +10,7 @@ import java.io.File;
 
 public class db extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 21;
     //VERSION 1  pruebas
     //VERSION 2  solo alta tabla de clientes
     //VERSION 3  se crea la tabla de art
@@ -29,7 +29,8 @@ public class db extends SQLiteOpenHelper {
     //VERSION 17  SE agrega  las tablas Cobro y CobroD
     //VERSION 18 Se agrega la tabla de visitasHistorico
     //VERSION 19 Se agrega campo finvisita,y las coordenada de fin visita   en la tabla visitas y visitas historico
-
+    //VERSION 20 Se agrega la tabla  visitasPromo
+    //VERSION 21 Se agregan  precio2,3  ,proveedor y linea en la tabla de art
     public static final String DATABASE_NAME = "indarAPP";
 
 
@@ -72,7 +73,11 @@ public class db extends SQLiteOpenHelper {
                 "    multiplo            INTEGER NOT NULL,\n" +
                 "    CantidadMinimaVenta  REAL    NOT NULL,\n" +
                 "    CantidadMaximaVenta REAL    NOT NULL,\n" +
-                "    disponible          REAL    NOT NULL\n" +
+                "    disponible          REAL    NOT NULL,\n" +
+                "    Precio2             REAL    NOT NULL,\n" +
+                "    Precio3            REAL     NOT NULL,\n" +
+                "    Proveedor           TEXT    NOT NULL,\n" +
+                "    Linea               TEXT    NOT NULL"+
                 ");");
         db.execSQL("CREATE TABLE visitas (\n" +
                 "    idVisitas        INTEGER PRIMARY KEY AUTOINCREMENT,\n" +  //0
@@ -191,6 +196,20 @@ public class db extends SQLiteOpenHelper {
                 "    longitudFin         REAL\n"  +
                 ");\n");
 
+        db.execSQL("CREATE TABLE visitasPromo (\n" +
+                "    idVisita          INT  PRIMARY KEY,\n" +
+                "    ferreImpulsos     INT,\n" +
+                "    muestras          INT,\n" +
+                "    especificoNombre1 TEXT,\n" +
+                "    especifico1       INT,\n" +
+                "    especificoNombre2 TEXT,\n" +
+                "    especifico2       INT,\n" +
+                "    especificoNombre3 TEXT,\n" +
+                "    especifico3       INT,\n" +
+                "    especificoNombre4 TEXT,\n" +
+                "    especifico4       INT\n" +
+                ");");
+
     }
 
     @Override
@@ -208,6 +227,7 @@ public class db extends SQLiteOpenHelper {
         db.execSQL("drop table if exists "+"Cobro");
         db.execSQL("drop table if exists "+"CobroD");
         db.execSQL("drop table if exists "+" visitasHistorico");
+        db.execSQL("drop table if exists "+" visitasPromo");
 
 
         onCreate(db);

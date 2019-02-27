@@ -2,25 +2,20 @@ package mx.indar.appvtas2.fragmentos.clientes.agenda;
 
 
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.ParcelUuid;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 
 import com.baoyachi.stepview.HorizontalStepView;
-import com.baoyachi.stepview.VerticalStepViewIndicator;
 import com.baoyachi.stepview.bean.StepBean;
 
 import java.sql.SQLException;
@@ -32,6 +27,7 @@ import mx.indar.appvtas2.NavigationIndar;
 import mx.indar.appvtas2.R;
 import mx.indar.appvtas2.dbAdapter;
 import mx.indar.appvtas2.fragmentos.clientes.cxc.cxcFragment;
+import mx.indar.appvtas2.fragmentos.clientes.promocionales.promocionalesVisita;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -175,11 +171,15 @@ public class VisitaAgendas extends Fragment implements NavigationIndar.IOnBackPr
                     Log.i("gps",l.getLongitude()+"");
                         actualizaBaseAvance(idVisita,"promo",(float)l.getLatitude(),(float)l.getLongitude());
                 }
-                PdfFragment pdff =new PdfFragment();
+                /*PdfFragment pdff =new PdfFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.contenidoNav, pdff, "pdfFragment")
                         .addToBackStack(null)
-                        .commit();
+                        .commit(); */
+                Intent intent = new Intent(getContext(),promocionalesVisita.class);
+                intent.putExtra("idvisita",idVisita);
+                startActivity(intent);
+
             }
         });
 

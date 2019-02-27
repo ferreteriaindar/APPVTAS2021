@@ -27,6 +27,7 @@ import mx.indar.appvtas2.dbClases.especificos;
 import mx.indar.appvtas2.dbClases.subirCobro;
 import mx.indar.appvtas2.dbClases.subirCobroD;
 import mx.indar.appvtas2.dbClases.visita;
+import mx.indar.appvtas2.dbClases.visitaPromo;
 
 public class dbAdapter {
 
@@ -699,6 +700,7 @@ public class dbAdapter {
            database.execSQL("delete from Cobro");
            database.execSQL("delete from CobroD");
            database.execSQL("delete from visitasHistorico");
+           database.execSQL("delete from visitasPromo");
 
 
 
@@ -707,5 +709,60 @@ public class dbAdapter {
 
     ///////////////////////////FIN//////////////////////////////////////////////////
     ////////////////////////RECIBOS DE COBRO///////////////////////////////////////////////
+
+
+    ///////////////////////////INICIO//////////////////////////////////////////////////
+    ////////////////////////VISITASPROMO///////////////////////////////////////////////
+
+
+     public long  insertarVisitaPromo(visitaPromo vp)
+     {
+         ContentValues cv = new ContentValues();
+         cv.put("idVisita",vp.getIdvisitas());
+         cv.put("ferreImpulsos",vp.isFerreImpulsos());
+         cv.put("muestras",vp.isMuestras());
+         cv.put("especificoNombre1",vp.getEspecificoNombre1());
+         cv.put("especifico1",vp.isEspecifico1());
+         cv.put("especificoNombre2",vp.getEspecificoNombre2());
+         cv.put("especifico2",vp.isEspecifico2());
+         cv.put("especificoNombre3",vp.getEspecificoNombre3());
+         cv.put("especifico3",vp.isEspecifico3());
+         cv.put("especificoNombre4",vp.getEspecificoNombre4());
+         cv.put("especifico4",vp.isEspecifico4());
+         return database.insert("visitasPromo",null,cv);
+     }
+
+     public List<visitaPromo> regresaVisitaPromo(long idVisita)
+     {
+         List<visitaPromo> lista = new ArrayList<>();
+         String query="select * from  visitasPromo where idvisita="+idVisita;
+         if(idVisita==0)
+             query="select * from visitasPromo";
+         Cursor cursor = database.rawQuery(query,null);
+         if(cursor.moveToFirst())
+         {
+             do{
+                 visitaPromo vp = new visitaPromo();
+                 vp.setIdvisitas(cursor.getInt(0));
+                 vp.setFerreImpulsos((cursor.getInt(1)==1));
+                 vp.setMuestras(cursor.getInt(2)==1);
+                 vp.setEspecificoNombre1(cursor.getString(3));
+                 vp.setEspecifico1(cursor.getInt(4)==1);
+                 vp.setEspecificoNombre2(cursor.getString(5));
+                 vp.setEspecifico2(cursor.getInt(6)==1);
+                 vp.setEspecificoNombre3(cursor.getString(7));
+                 vp.setEspecifico3(cursor.getInt(8)==1);
+                 vp.setEspecificoNombre4(cursor.getString(9));
+                 vp.setEspecifico4(cursor.getInt(10)==1);
+             }while (cursor.moveToNext());
+
+
+         }
+         cursor.close();
+        return  lista;
+     }
+
+    ///////////////////////////FIN//////////////////////////////////////////////////
+    ////////////////////////VISITASPROMO///////////////////////////////////////////////
 
 }

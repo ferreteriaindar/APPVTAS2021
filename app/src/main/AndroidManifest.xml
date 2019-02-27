@@ -75,7 +75,9 @@
         <activity android:name=".menuClientes.Cobros.cobroDetalle" />
         <activity android:name=".fragmentos.clientes.agenda.VisitasCte" />
         <activity android:name=".menuClientes.Visitas.visitasHistoria" />
-        <activity android:name=".menuClientes.Visitas.visitasHistoriaDetalle"></activity>
+        <activity android:name=".menuClientes.Visitas.visitasHistoriaDetalle" />
+        <activity android:name=".fragmentos.clientes.promocionales.promocionalesVisita" />
+        <activity android:name=".fragmentos.clientes.promocionales.encuesta"></activity>
     </application>
 
 </manifest>

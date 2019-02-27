@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     Context context;
     Intent intent1;
     DownloadManager downloadManager;
-    private static final double APP_VERSION = 1.2; //CORRIGE   EL FORMATO DE 24 HRS EN LAS VISITAS
+    private static final double APP_VERSION = 1.2; //detalle de visita sy cobros y forzar subir datos
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

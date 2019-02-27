@@ -25,6 +25,7 @@ import java.util.List;
 import mx.indar.appvtas2.dbClases.subirCobro;
 import mx.indar.appvtas2.dbClases.subirCobroD;
 import mx.indar.appvtas2.dbClases.visita;
+import mx.indar.appvtas2.dbClases.visitaPromo;
 import mx.indar.appvtas2.fragmentos.clientes.agenda.AdaptadorAgenda;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -51,6 +52,7 @@ public class UPLOADinfo  extends AsyncTask<Void,String,Boolean> {
          uploadVisitasV2();
          Log.i("cobro"," si entra");
         uploadCobros();
+        uploadVisitaPromo();
         p.dismiss();
 
         return true;
@@ -192,6 +194,49 @@ public class UPLOADinfo  extends AsyncTask<Void,String,Boolean> {
 
 
     }
+
+
+
+
+    public  boolean uploadVisitaPromo()
+    {
+        List<visitaPromo> lista= new ArrayList<>();
+        JSONObject visitaPromoMain = new JSONObject();
+        dbAdapter db  = new dbAdapter(ni.getApplicationContext());
+        try {
+            db.open(true);
+            lista=db.regresaVisitaPromo(0);
+            db.close(true);
+
+            for (int i = 0; i < lista.size(); i++) {
+                JSONArray jsonArray = new JSONArray();
+                JSONObject obj = new JSONObject();
+                obj.put("idVisitas",lista.get(i).getIdvisitas());
+                obj.put("ferreImpulsos",lista.get(i).isFerreImpulsos());
+                obj.put("muestras",lista.get(i).isMuestras());
+                obj.put("especificoNombre1",lista.get(i).getEspecificoNombre1());
+                obj.put("especifico1",lista.get(i).isEspecifico1());
+                obj.put("especificoNombre2",lista.get(i).getEspecificoNombre2());
+                obj.put("especifico2",lista.get(i).isEspecifico2());
+                obj.put("especificoNombre3",lista.get(i).getEspecificoNombre3());
+                obj.put("especifico3",lista.get(i).isEspecifico3());
+                obj.put("especificoNombre4",lista.get(i).getEspecificoNombre4());
+                obj.put("especifico4",lista.get(i).isEspecifico4());
+                jsonArray.put(obj);
+                JSONObject visitasPromoJson = new JSONObject();
+                visitasPromoJson.put("visitas",jsonArray);
+            }
+
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
 
     public  boolean uploadVisitas()
