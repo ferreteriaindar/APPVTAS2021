@@ -102,6 +102,7 @@ public class db extends SQLiteOpenHelper {
                 "    latitudFin        REAL"+
                 ");");
 
+
         db.execSQL("CREATE TABLE cxcCliente (\n" +
                 "    Cliente        TEXT    NOT NULL,\n" +
                 "    Mov            TEXT    NOT NULL,\n" +
