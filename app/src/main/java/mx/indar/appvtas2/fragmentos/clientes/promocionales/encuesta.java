@@ -86,7 +86,7 @@ public class encuesta extends AppCompatActivity {
         switch (item.getItemId())
         {
             case R.id.menuencuestaFin:
-                //imprimirCobro();
+                 finish();
 
 
 

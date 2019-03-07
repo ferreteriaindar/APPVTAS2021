@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -27,6 +29,7 @@ import mx.indar.appvtas2.NavigationIndar;
 import mx.indar.appvtas2.R;
 import mx.indar.appvtas2.dbAdapter;
 import mx.indar.appvtas2.fragmentos.clientes.cxc.cxcFragment;
+import mx.indar.appvtas2.fragmentos.clientes.promocionales.encuesta;
 import mx.indar.appvtas2.fragmentos.clientes.promocionales.promocionalesVisita;
 
 /**
@@ -170,12 +173,15 @@ public class VisitaAgendas extends Fragment implements NavigationIndar.IOnBackPr
                     Log.i("gps","gps");
                     Log.i("gps",l.getLongitude()+"");
                         actualizaBaseAvance(idVisita,"promo",(float)l.getLatitude(),(float)l.getLongitude());
-                }
-                /*PdfFragment pdff =new PdfFragment();
+
+
+
+                }PdfFragment pdff =new PdfFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.contenidoNav, pdff, "pdfFragment")
                         .addToBackStack(null)
-                        .commit(); */
+                        .commit();
+                /**/
                 Intent intent = new Intent(getContext(),promocionalesVisita.class);
                 intent.putExtra("idvisita",idVisita);
                 startActivity(intent);
@@ -188,7 +194,18 @@ public class VisitaAgendas extends Fragment implements NavigationIndar.IOnBackPr
 
 
 
-
+    // automatic turn off the gps
+    public void turnGPSOff()
+    {
+        String provider = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        if(provider.contains("gps")){ //if gps is enabled
+            final Intent poke = new Intent();
+            poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
+            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
+            poke.setData(Uri.parse("3"));
+            this.getContext().sendBroadcast(poke);
+        }
+    }
     public  long regresaIDVisita(String cliente) {
         dbAdapter db = new dbAdapter(getActivity().getApplicationContext());
         try {
@@ -380,7 +397,13 @@ public class VisitaAgendas extends Fragment implements NavigationIndar.IOnBackPr
                 Log.i("gps","gps");
                 Log.i("gps",l.getLongitude()+"");
                 actualizaBaseAvance(idVisita,"fin",(float)l.getLatitude(),(float)l.getLongitude());
+
                 setResultadoSalir(true);
+                Intent intent = new Intent(getContext(),encuesta.class);
+                intent.putExtra("idVisita",idVisita);
+                intent.putExtra("cliente",cliente);
+                startActivity(intent);
+
                 getActivity().getSupportFragmentManager().popBackStack();
                 //  dialogInterface.dismiss();
 

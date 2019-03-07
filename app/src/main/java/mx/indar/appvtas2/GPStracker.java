@@ -14,6 +14,7 @@ import android.widget.Toast;
 public class GPStracker implements LocationListener {
 
     Context context;
+   public LocationManager lm;
     public  GPStracker (Context context)
     {
         this.context=context;
@@ -29,7 +30,7 @@ public class GPStracker implements LocationListener {
             Toast.makeText(context, "Permision not Granted", Toast.LENGTH_SHORT).show();
             return null;
         }
-        LocationManager lm =(LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+         lm =(LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
         boolean isGPSEnable=lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if(isGPSEnable)
         {
@@ -43,6 +44,11 @@ public class GPStracker implements LocationListener {
         return  null;
     }
 
+
+    public  void apagarGPS()
+    {
+        lm.removeUpdates(this);
+    }
     @Override
     public void onLocationChanged(Location location) {
         Log.i("GPS",location.getLatitude()+"changed");
