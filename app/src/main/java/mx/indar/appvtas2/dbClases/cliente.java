@@ -72,6 +72,16 @@ public class cliente {
     String calle,poblacion;
     int dia;
 
+    public int getMetrosTolerancia() {
+        return metrosTolerancia;
+    }
+
+    public void setMetrosTolerancia(int metrosTolerancia) {
+        this.metrosTolerancia = metrosTolerancia;
+    }
+
+    int metrosTolerancia;
+
     public String getDireccion() {
         return direccion;
     }
@@ -119,6 +129,7 @@ public class cliente {
     public void setDia(int dia) {
         this.dia = dia;
     }
+
 
 
 

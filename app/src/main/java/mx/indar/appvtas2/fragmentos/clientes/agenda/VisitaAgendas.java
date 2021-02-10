@@ -1,11 +1,14 @@
 package mx.indar.appvtas2.fragmentos.clientes.agenda;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -27,6 +30,8 @@ import java.util.List;
 import mx.indar.appvtas2.GPStracker;
 import mx.indar.appvtas2.NavigationIndar;
 import mx.indar.appvtas2.R;
+import mx.indar.appvtas2.UPLOADinfo;
+import mx.indar.appvtas2.Upload.MyAsyncTask;
 import mx.indar.appvtas2.dbAdapter;
 import mx.indar.appvtas2.fragmentos.clientes.cxc.cxcFragment;
 import mx.indar.appvtas2.fragmentos.clientes.promocionales.encuesta;
@@ -399,10 +404,24 @@ public class VisitaAgendas extends Fragment implements NavigationIndar.IOnBackPr
                 actualizaBaseAvance(idVisita,"fin",(float)l.getLatitude(),(float)l.getLongitude());
 
                 setResultadoSalir(true);
-                Intent intent = new Intent(getContext(),encuesta.class);
+
+
+                //ESTA ES LA ENCUESTA DE SATISFACCION DE CLIENTE  SE QUITA POR QUE NO SE A PUESTO EN PRODUCCION EN 2 AÑOS
+           /*    Intent intent = new Intent(getContext(),encuesta.class);
                 intent.putExtra("idVisita",idVisita);
                 intent.putExtra("cliente",cliente);
-                startActivity(intent);
+                startActivity(intent);*/
+
+           //Si tiene internet se envia la  visita de una vez
+                if(TieneInternet())
+                {
+                    MyAsyncTask myAsyncTask= new MyAsyncTask(getContext(),false);
+                    myAsyncTask.execute(1);
+
+
+                }
+
+
 
                 getActivity().getSupportFragmentManager().popBackStack();
                 //  dialogInterface.dismiss();
@@ -441,6 +460,20 @@ public class VisitaAgendas extends Fragment implements NavigationIndar.IOnBackPr
 
     }
 
+
+    public boolean TieneInternet()
+    {
+
+        Log.d("ENTRA","SI");
+        ConnectivityManager cm = (ConnectivityManager)getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        Log.d("bolean",Boolean.toString(isConnected));
+        return isConnected;
+
+    }
 
 
 

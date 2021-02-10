@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.provider.DocumentsContract;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +44,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -66,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     Context context;
     Intent intent1;
     DownloadManager downloadManager;
-    private static final double APP_VERSION = 1.2; //detalle de visita sy cobros y forzar subir datos
+    private static final double APP_VERSION = 1.4; //detalle de visita sy cobros y forzar subir datos
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,22 +152,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void descargaArchivo() {
+    public void descargaArchivo() throws FileNotFoundException {
 
         downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        Uri uri = Uri.parse("https://www.indar.mx/Descargas/indarAPP/indarAPP.apk");
+        Uri uri = Uri.parse("http://www.indar.mx/Descargas/indarAPP/indarAPP.APK");
         final DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         final Long reference = downloadManager.enqueue(request);
-
+        Log.d("INSTALAR REF",Long.toString(reference));
 
         BroadcastReceiver onComplete = new BroadcastReceiver() {
             public void onReceive(Context ctxt, Intent intent) {
                 try {
+                    Log.e("INSTALAR","INICIO");
+                //    final Uri newUri=  DocumentsContract.renameDocument(getContentResolver(),downloadManager.getUriForDownloadedFile(reference),"indarAPP");
+                   // Log.e("INSTALAR NEW",newUri.toString());
                     Intent install = new Intent(Intent.ACTION_VIEW);
                     install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     install.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    install.setDataAndType(downloadManager.getUriForDownloadedFile(reference), downloadManager.getMimeTypeForDownloadedFile(reference));
+                   // install.setDataAndType(downloadManager.getUriForDownloadedFile(reference), downloadManager.getMimeTypeForDownloadedFile(reference));
+                    install.setDataAndType(downloadManager.getUriForDownloadedFile(reference),"application/vnd.android.package-archive");
                     startActivity(install);
 
                     unregisterReceiver(this);
@@ -205,7 +212,11 @@ public class MainActivity extends AppCompatActivity {
                         }
 
 
-                        descargaArchivo();
+                        try {
+                            descargaArchivo();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 

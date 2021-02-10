@@ -2,10 +2,12 @@ package mx.indar.appvtas2.fragmentos.clientes.agenda;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -190,7 +192,7 @@ public class AgendasFragment extends Fragment implements TextWatcher, LocationLi
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l) {
                 final String selected =((TextView)view.findViewById(R.id.txtLayoutAgendasCte)).getText().toString();
                     final boolean primerVisita=primeraVisita(selected);
 
@@ -225,45 +227,66 @@ public class AgendasFragment extends Fragment implements TextWatcher, LocationLi
                                     double latitude = Ubicacion.getLatitude();
                                     double longitude = Ubicacion.getLongitude();
                                     Log.i("gps", latitude + "," + longitude);
-                                    Toast.makeText(getActivity(), latitude + "/" + longitude, Toast.LENGTH_SHORT).show();
+                                  //  Toast.makeText(getActivity(), latitude + "/" + longitude, Toast.LENGTH_SHORT).show();
 
 
-//                                Log.i("gps",location.getLongitude()+"");
-
-                                    dbAdapter db = new dbAdapter(container.getContext());
                                     try {
+                                        if (EstasDentroDeLaCerca(container.getContext(), latitude, longitude, selected)<50)
+                                        {
 
-                                        if (primerVisita) {
-                                            Log.i("primeraVisita", "primeravisita del if" + primerVisita + "");
-                                            db.open(true);
-                                            visita v = new visita();
-                                            v.setCliente(selected);
-                                            // v.setLatitud((float) location.getLatitude());
-                                            //  v.setLongitud((float) location.getLongitude());
-                                            v.setLatitud((float) Ubicacion.getLatitude());
-                                            v.setLongitud((float) Ubicacion.getLongitude());
+    //                                Log.i("gps",location.getLongitude()+"");
 
-                                            idvisita = db.registraVisitaCte(v);
-                                            Log.i("primeraVisita", "ID" + idvisita);
-                                            db.close(true);
+                                            dbAdapter db = new dbAdapter(container.getContext());
+                                        try {
+
+                                            if (primerVisita) {
+                                                Log.i("primeraVisita", "primeravisita del if" + primerVisita + "");
+                                                db.open(true);
+                                                visita v = new visita();
+                                                v.setCliente(selected);
+                                                // v.setLatitud((float) location.getLatitude());
+                                                //  v.setLongitud((float) location.getLongitude());
+                                                v.setLatitud((float) Ubicacion.getLatitude());
+                                                v.setLongitud((float) Ubicacion.getLongitude());
+
+                                                idvisita = db.registraVisitaCte(v);
+                                                Log.i("primeraVisita", "ID" + idvisita);
+                                                db.close(true);
+                                            }
+                                            VisitaAgendas va = new VisitaAgendas();
+                                            Bundle args = new Bundle();
+                                            args.putLong("idVisita", idvisita);
+                                            args.putString("cliente", selected);
+
+                                            va.setArguments(args);
+                                            Log.i("visita", "si crea obketo");
+                                            getActivity().getSupportFragmentManager().beginTransaction()
+                                                    .replace(R.id.contenidoNav, va, "findThisFragment")
+                                                    .addToBackStack("AgendasFragment")
+                                                    .commit();
+
+                                        } catch (SQLException e) {
+                                            e.printStackTrace();
+                                            Log.i("primeraVisita", e.getMessage());
                                         }
-                                        VisitaAgendas va = new VisitaAgendas();
-                                        Bundle args = new Bundle();
-                                        args.putLong("idVisita", idvisita);
-                                        args.putString("cliente", selected);
 
-                                        va.setArguments(args);
-                                        Log.i("visita", "si crea obketo");
-                                        getActivity().getSupportFragmentManager().beginTransaction()
-                                                .replace(R.id.contenidoNav, va, "findThisFragment")
-                                                .addToBackStack("AgendasFragment")
-                                                .commit();
+                                    }
+                                    else {
 
+                                         //   Toast.makeText(getActivity(), "Estas a "+Float.toString( EstasDentroDeLaCerca(container.getContext(), latitude, longitude, selected))+"metros del cliente,estas lejos", Toast.LENGTH_LONG).show();
+                                            Snackbar snack = null;
+                                           snack= Snackbar.make(view,"Estas a "+Float.toString( EstasDentroDeLaCerca(container.getContext(), latitude, longitude, selected))+" metros del cliente, ACERCATE!!",Snackbar.LENGTH_LONG);
+                                            View snackView =snack.getView();
+                                            snackView.setBackgroundColor(getResources().getColor(R.color.RojoAviso));
+                                            snack.show();
+
+
+                                    }
                                     } catch (SQLException e) {
                                         e.printStackTrace();
-                                        Log.i("primeraVisita", e.getMessage());
                                     }
                                 }
+
                                 else
                                     Toast.makeText(getActivity(), "No hay señal GPS espera un Momento", Toast.LENGTH_SHORT).show();
 
@@ -316,6 +339,31 @@ public class AgendasFragment extends Fragment implements TextWatcher, LocationLi
 
 
         return view;
+    }
+
+    public Float EstasDentroDeLaCerca(Context context,double latitud,double logitud,String clienteP) throws SQLException {
+       try {
+           dbAdapter da = new dbAdapter(context);
+           da.open(true);
+           List<cliente> CTE = da.regresaClienteInfoUnico(clienteP);
+           da.close(true);
+           if (!CTE.isEmpty() && CTE != null) {
+               cliente cte = CTE.get(0);
+               Location mylocation = new Location("");
+               Location dest_location = new Location("");
+               mylocation.setLatitude(cte.getCoordenadax());
+               mylocation.setLongitude(cte.getCoordenaday());
+               dest_location.setLatitude(latitud);
+               dest_location.setLongitude(logitud);
+               float distance = mylocation.distanceTo(dest_location);//in meters
+               Log.d("Metros", Float.toString(distance));
+                //PARA LOS CLIENTES QUE NO TIENEN LA COORDENADA  ,osea =1    los dejo pasar
+                return   cte.getCoordenadax()==1?0:distance;
+           }
+       }catch (SQLException e) {
+            e.printStackTrace();
+        }
+       return 0F;
     }
 
     @Override

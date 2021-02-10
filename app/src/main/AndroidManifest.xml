@@ -19,9 +19,9 @@
 
     <application
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcherindaramarillo"
+        android:icon="@mipmap/ic_rayo_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcherindaramarillo_round"
+        android:roundIcon="@mipmap/ic_rayo_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="allowBackup">

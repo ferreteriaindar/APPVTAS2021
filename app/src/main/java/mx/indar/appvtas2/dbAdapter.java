@@ -186,6 +186,33 @@ public class dbAdapter {
 
     }
 
+    public List< cliente> regresaClienteInfoUnico(String cliente)
+    {
+        List<cliente> listaClientes= new ArrayList<cliente>();
+        String query="select * from clientes where cliente='"+cliente+"'";
+        Cursor cursor = database.rawQuery(query,null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                mx.indar.appvtas2.dbClases.cliente  cte = new cliente();
+                cte.setCliente(cursor.getString(0));
+                cte.setNombreCliente(cursor.getString(1));
+                cte.setZona(cursor.getString(2));
+                cte.setDireccion(cursor.getString(3));
+                cte.setRfc(cursor.getString(4));
+                cte.setCoordenadax(cursor.getFloat(5));
+                cte.setCoordenaday(cursor.getFloat(6));
+                cte.setCalle(cursor.getString(7));
+                cte.setPoblacion(cursor.getString(8));
+                cte.setDia(cursor.getInt(9));
+                cte.setMetrosTolerancia(cursor.getInt(10));
+                listaClientes.add(cte);
+            }while (cursor.moveToNext());
+        }
+
+        return  listaClientes;
+    }
+
     public  long registraVisitaCte(visita v)
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat(

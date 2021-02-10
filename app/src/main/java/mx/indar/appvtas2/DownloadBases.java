@@ -471,6 +471,7 @@ public class DownloadBases  extends AsyncTask<Void,String,Boolean> {
 
               } catch (IOException e) {
                   e.printStackTrace();
+
               }catch (JSONException EX) {
                   EX.printStackTrace();
               }catch (java.sql.SQLException e) {

@@ -10,7 +10,7 @@ import java.io.File;
 
 public class db extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 21;
+    private static final int DATABASE_VERSION = 22;
     //VERSION 1  pruebas
     //VERSION 2  solo alta tabla de clientes
     //VERSION 3  se crea la tabla de art
@@ -31,6 +31,7 @@ public class db extends SQLiteOpenHelper {
     //VERSION 19 Se agrega campo finvisita,y las coordenada de fin visita   en la tabla visitas y visitas historico
     //VERSION 20 Se agrega la tabla  visitasPromo
     //VERSION 21 Se agregan  precio2,3  ,proveedor y linea en la tabla de art
+    //VERSION 22 Se agrega  metrostolerancia en table clientes
     public static final String DATABASE_NAME = "indarAPP";
 
 
@@ -59,7 +60,8 @@ public class db extends SQLiteOpenHelper {
                 "    coordenaday REAL,\n" +
                 "    calle       TEXT,\n" +
                 "    Poblacion   TEXT,\n" +
-                "    dia         INTEGER\n" +
+                "    dia         INTEGER,\n" +
+                "    metrosTolerancia   INTERGER\n" +
                 ");");
         db.execSQL("CREATE TABLE art (\n" +
                 "    Articulo            TEXT    PRIMARY KEY\n" +
